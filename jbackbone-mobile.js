@@ -8,16 +8,14 @@ var supportsOrientationChange = "onorientationchange" in window,
 
 String.prototype.contains = function(it) { return this.indexOf(it) != -1; };
 
-document.addEventListener("DOMContentLoaded", function () {
-    doStuffOnLoaded();
-}, false);
-
 window.addEventListener(orientationEvent, function() {
    resetMargin(window.innerWidth);
    document.getElementById('slider').style.marginLeft = -(window.innerWidth) + "px";
 }, false);
 
-function doStuffOnLoaded(){
+function loadAllStuff(pages){
+
+	addContentToIndex(pages);
 
 	//hideShowPages(currentPage);
 
@@ -56,7 +54,6 @@ function doStuffOnLoaded(){
 			goToPage(pageId, parentId , parentObject);
         };
 	}	
-
 }
 
 function goToPage(pageId, parentId, parentObject){
@@ -180,3 +177,56 @@ function sliderPage(pageSelectedId, parentId, gap){
 	document.getElementById('slider').style.marginLeft = gap+"px";
 	lastSliderMargin = gap;
 }
+
+function addPage(id, url) {
+  var req = false;
+  // For Safari, Firefox, and other non-MS browsers
+  if (window.XMLHttpRequest) {
+    try {
+      req = new XMLHttpRequest();
+    } catch (e) {
+      req = false;
+    }
+  } else if (window.ActiveXObject) {
+    // For Internet Explorer on Windows
+    try {
+      req = new ActiveXObject("Msxml2.XMLHTTP");
+    } catch (e) {
+      try {
+        req = new ActiveXObject("Microsoft.XMLHTTP");
+      } catch (e) {
+        req = false;
+      }
+    }
+  }
+ var element = document.getElementById(id);
+ if (!element) {
+  alert("Bad id " + id + 
+   "passed to clientSideInclude." +
+   "You need a div or span element " +
+   "with this id in your page.");
+  return;
+ }
+  if (req) {
+    // Synchronous request, wait till we have it all
+    req.open('GET', url, false);
+    req.send(null);
+    element.innerHTML = element.innerHTML+req.responseText;
+  } else {
+    element.innerHTML =
+   "Sorry, your browser does not support " +
+      "XMLHTTPRequest objects. This page requires " +
+      "Internet Explorer 5 or better for Windows, " +
+      "or Firefox for any system, or Safari. Other " +
+      "compatible browsers may also exist.";
+  }
+}
+
+function addContentToIndex(pages) {
+
+	for (var i = 0; i< pages.length ;i++){
+		var htmlFile = pages[i];
+		addPage('slider', htmlFile);
+	}
+
+};

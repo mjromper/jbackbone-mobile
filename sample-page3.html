@@ -1,0 +1,46 @@
+<!-- 
+Main concepts:
+
++ PAGES: one 'page' it is always linked from the Menu as an achor using its ID.
++ SUB-PAGES, Level 1: one 'subpage level 1' could be linked from another PAGE using its ID, NEVER from the Menu.
++ SUB-PAGES, Level 2: one 'subpage level 2' is always linked from another SUB-PAGE Level 1.
+...
++ SUB-PAGES, Level N: one 'subpage level N' is always linked from another SUB-PAGE Level (N-1).
+
+
+
+So, A PAGE:
+	- It should have a main DIV with a unique ID (i.e : 'sample-page').
+	- As it is a PAGE referenced from Menu it must have JUST the 'block' class.
+	- As it is a PAGE it should contains a "menu button" in its header.
+	- A page always has a 'section' where it contains the page content.
+	- A page could contains one (or more) Link to another SUBPAGE, then this SUBPAGE would be a supage level 1.
+
+Then, A SUB-PAGE:
+	- It should have a main DIV with a unique ID (i.e : 'page2-page').	
+	- As it is a SUBPAGE referenced from another PAGE it must have BOTH the 'block' and 'sub-block' classes.
+	- As it is a SUBPAGEPAGE it should contains a "back button" in its header.
+	- A subpage always has a 'section' where it contains the subpage content.
+	- A subpage could contains one (or more) Link(s) to another new SUB-PAGE, then this new SUB-PAGE would be a supage one level deeper.
+	
+-->
+
+<!-- Sample PAGE backbone structure -->
+<div id="sample-page3" class="block">
+	
+	<!-- Header for this page -->
+	<header>							
+		<div class="menuPic"></div> 	<!-- menu button -->
+		<h3>PAGE 3 TITLE</h3>			<!-- titile text -->
+	</header>
+
+	<!-- CONTENT -->
+	<section>							
+		<p align="center">
+			Here PAGE 3 content
+		</p>
+		<p>
+			Go to subpage LEVEL 1, <a href="#sample-subpage-l1"> CLICK HERE </a>
+		</p>
+	</section>
+</div>
