@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+		<meta name="viewport" content="initial-scale=1.0, width=device-width, minimum-scale=1.0, maximum-scale=1.0"/>
+		<title>Drive (beta)</title>
+		<link rel="stylesheet" type="text/css" media="screen, projection" href="styles-backbone.css" />
+		<script type="text/javascript" src="js/jbackbone-mobile.js"></script>
+	</head>
+	<body>
+		<a id="dispatch" style="display:none" href="#"></a>
+		<div class="binder">						
+				<div id="slider" class="slider">					
+					<!-- Menu 1 -->
+					<div id="menu-page" class="block">					
+						<nav class="navBar">
+							<h3 style="color: white; text-align: center">MENU</h3>	
+							<li>
+								<a class="has-child" href="#dashboard-page">Dashboard</a>
+							</li>
+							<li>
+								<a class="has-child" href="#progress-page">Progress</a>
+							</li>
+							<li>
+								<a class="has-child" href="#activity-page">Activity</a>
+							</li>
+						</nav>
+					</div>
+
+					<!-- Page Dashboard -->
+					<div id="dashboard-page" class="block">
+						<header>
+							<div class="menuPic" ></div>
+							<h3>DASHBOARD</h3>		
+						</header>
+						<section>
+							<p align="center">
+								This is the DASHBOARD page
+							</p>
+						</section>
+					</div>
+
+					<!-- Page Progress -->
+					<div id="progress-page" class="block">
+						<header>
+							<div class="menuPic" ></div>
+							<h3>PROGRESS</h3>		
+						</header>
+						<section>
+							<p align="center">
+								This is the PROGRESS page
+							</p>
+						</section>
+					</div>
+					<!-- Page Activity -->
+					<div id="activity-page" class="block">
+						<header>
+							<div class="menuPic" ></div>
+							<h3>ACTIVITY</h3>		
+						</header>
+						<section>
+							<p align="center">
+								This is the ACTIVITY page
+							</p>
+							<p>
+								Go to activity Subpage <a href="#activity-subpage">Click here</a>
+							</p>
+						</section>
+					</div>
+					<!-- Page Activity 2-->
+					<div id="activity-subpage2" class="block  sub-block">
+						<header>
+							<div class="back" >Back</div>
+							<h3>ACTIVITY SUBPAGE 2</h3>		
+						</header>
+						<section>
+							<p align="center">
+								This is the activity subpage 2
+							</p>
+							
+						</section>
+					</div>
+					<!-- Subpage Activity -->
+					<div id="activity-subpage" class="block sub-block">
+						<header>
+							<div class="back" >Back</div>
+							<h3>ACTIVITY SUBPAGE</h3>		
+						</header>
+						<section>
+							<p align="center">
+								This is the activity subpage
+							</p>
+							<p>
+								Go to activity Subpage 2: <a href="#activity-subpage2">Click here</a>
+							</p>
+						</section>
+					</div>
+
+				</div>
+		</div>
+	</body>
+</html>	
