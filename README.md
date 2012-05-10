@@ -38,18 +38,19 @@ HOW TO USE IT
 2.- Add a javascript code in your header as this one, where to indicate which pages build your application.
 
 	<script type="text/javascript">
-		document.addEventListener("DOMContentLoaded", function () {		
+		document.addEventListener("DOMContentLoaded", function () {
+
 			/**
 			 IMPORTANT!!!!!
 			 1. Read instructions before 
 			 2. JUST MODIFY THIS SECTION ADDING YOUR PAGES TO THE LIST BELOW 
 			 **/
 			var pages = [
-			
-			'menu.html', /* This is how the menu should look like, IT SHOULD BE THE FIST PAGE in the list!!! */
+
+			'sample-menu.html', /* This is how the menu should look like, IT SHOULD BE THE FIST PAGE in the list!!! */
 			'sample-page1.html',	/* This is the fist page will be shown. Should be always following the menu */	
 
-						
+
 			/* Rest of the pages. Don't worry about the order */
 			'sample-page2.html', 
 			'sample-page3.html',
@@ -64,7 +65,12 @@ HOW TO USE IT
 	    	jbackbone.loadAllStuff(pages);
 
 		}, false);
-	
+
+		document.addEventListener("page-change", function(event){
+			console.log("page-change");
+			console.log(event);
+		});
+
 	</script>
 
 3.- Implement as many PAGES and SUBPAGES as you want according the instructions given and examples provided.
