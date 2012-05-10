@@ -34,10 +34,14 @@
 			 END OF MODIFICATION SECTION 
 			 **/			
 
-
-	    	loadAllStuff(pages);
+	    	jbackbone.loadAllStuff(pages);
 
 		}, false);
+		
+		document.addEventListener("page-change", function(event){
+			console.log("page-change");
+			console.log(event);
+		});
 	
 	</script>
 
