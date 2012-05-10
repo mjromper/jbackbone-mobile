@@ -4,8 +4,8 @@ var supportsOrientationChange = "onorientationchange" in window,
 String.prototype.contains = function(it) { return this.indexOf(it) != -1; };
 
 window.addEventListener(orientationEvent, function() {
-   jbackbone.resetMargin(window.innerWidth);
-   document.getElementById('slider').style.marginLeft = -(window.innerWidth) + "px";
+	jbackbone.resetMargin(window.innerWidth);
+	document.getElementById('slider').style.marginLeft = -(window.innerWidth) + "px";
 }, false);
 
 function JBackbone(){
@@ -122,26 +122,25 @@ JBackbone.prototype.resetMargin = function(width) {
 }
 
 JBackbone.prototype.getElementsByClassName = function(node,classname) {
-  if (node.getElementsByClassName) { // use native implementation if available
-    return node.getElementsByClassName(classname);
-  } else {
-    return (function getElementsByClass(searchClass,node) {
-        if ( node == null )
-          node = document;
-        var classElements = [],
-            els = node.getElementsByTagName("*"),
-            elsLen = els.length,
-            pattern = new RegExp("(^|\\s)"+searchClass+"(\\s|$)"), i, j;
+	if (node.getElementsByClassName) { // use native implementation if available
+		return node.getElementsByClassName(classname);
+	} else {
+		return (function getElementsByClass(searchClass,node) {
+			if ( node == null ) node = document;
+			var classElements = [],
+			els = node.getElementsByTagName("*"),
+			elsLen = els.length,
+			pattern = new RegExp("(^|\\s)"+searchClass+"(\\s|$)"), i, j;
 
-        for (i = 0, j = 0; i < elsLen; i++) {
-          if ( pattern.test(els[i].className) ) {
-              classElements[j] = els[i];
-              j++;
-          }
-        }
-        return classElements;
-    })(classname, node);
-  }
+			for (i = 0, j = 0; i < elsLen; i++) {
+				if ( pattern.test(els[i].className) ) {
+					classElements[j] = els[i];
+					j++;
+				}
+			}
+			return classElements;
+		})(classname, node);
+	}
 }
 
 JBackbone.prototype.clickNavHeaderOption = function(class_name) {
@@ -179,47 +178,46 @@ JBackbone.prototype.sliderPage = function(pageSelectedId, parentId, gap){
 }
 
 JBackbone.prototype.addPage = function(id, url) {
-  var req = false;
-  // For Safari, Firefox, and other non-MS browsers
-  if (window.XMLHttpRequest) {
-    try {
-      req = new XMLHttpRequest();
-    } catch (e) {
-      req = false;
-    }
-  } else if (window.ActiveXObject) {
-    // For Internet Explorer on Windows
-    try {
-      req = new ActiveXObject("Msxml2.XMLHTTP");
-    } catch (e) {
-      try {
-        req = new ActiveXObject("Microsoft.XMLHTTP");
-      } catch (e) {
-        req = false;
-      }
-    }
-  }
- var element = document.getElementById(id);
- if (!element) {
-  alert("Bad id " + id + 
-   "passed to clientSideInclude." +
-   "You need a div or span element " +
-   "with this id in your page.");
-  return;
- }
-  if (req) {
-    // Synchronous request, wait till we have it all
-    req.open('GET', url, false);
-    req.send(null);
-    element.innerHTML = element.innerHTML+req.responseText;
-  } else {
-    element.innerHTML =
-   "Sorry, your browser does not support " +
-      "XMLHTTPRequest objects. This page requires " +
-      "Internet Explorer 5 or better for Windows, " +
-      "or Firefox for any system, or Safari. Other " +
-      "compatible browsers may also exist.";
-  }
+	var req = false;
+	// For Safari, Firefox, and other non-MS browsers
+	if (window.XMLHttpRequest) {
+		try {
+			req = new XMLHttpRequest();
+		} catch (e) {
+			req = false;
+		}
+	} else if (window.ActiveXObject) {
+		// For Internet Explorer on Windows
+		try {
+			req = new ActiveXObject("Msxml2.XMLHTTP");
+		} catch (e) {
+			try {
+				req = new ActiveXObject("Microsoft.XMLHTTP");
+			} catch (e) {
+				req = false;
+			}
+		}
+	}
+	var element = document.getElementById(id);
+	if (!element) {
+		alert("Bad id " + id + "passed to clientSideInclude." +
+		"You need a div or span element " +
+		"with this id in your page.");
+		return;
+	}
+	if (req) {
+		// Synchronous request, wait till we have it all
+		req.open('GET', url, false);
+		req.send(null);
+		element.innerHTML = element.innerHTML+req.responseText;
+	} else {
+		element.innerHTML =
+		"Sorry, your browser does not support " +
+		"XMLHTTPRequest objects. This page requires " +
+		"Internet Explorer 5 or better for Windows, " +
+		"or Firefox for any system, or Safari. Other " +
+		"compatible browsers may also exist.";
+		}
 }
 
 JBackbone.prototype.addContentToIndex = function(pages) {
