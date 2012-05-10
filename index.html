@@ -3,7 +3,7 @@
 	<head>
 		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 		<meta name="viewport" content="initial-scale=1.0, width=device-width, minimum-scale=1.0, maximum-scale=1.0"/>
-		<title>Drive (beta)</title>
+		<title>JBackbone Sample</title>
 		<link rel="stylesheet" type="text/css" media="screen, projection" href="styles-backbone.css" />
 		<script type="text/javascript" src="jbackbone-mobile.js"></script>
 	</head>
@@ -34,10 +34,14 @@
 			 END OF MODIFICATION SECTION 
 			 **/			
 
-
-	    	loadAllStuff(pages);
+	    	jbackbone.loadAllStuff(pages);
 
 		}, false);
+		
+		document.addEventListener("page-change", function(event){
+			console.log("page-change");
+			console.log(event);
+		});
 	
 	</script>
 
