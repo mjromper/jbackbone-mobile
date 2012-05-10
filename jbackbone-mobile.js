@@ -60,8 +60,9 @@ JBackbone.prototype.loadAllStuff = function(pages){
 JBackbone.prototype.goToPage = function(pageId, parentId, parentObject){
 	defaultWidth = window.innerWidth;
 	this.lastParentPage = parentId;
+	var box = document.getElementById('slider');
 	selectedMargin = document.getElementById(pageId).style.marginLeft;
-	sliderMargin = document.getElementById('slider').style.marginLeft;
+	sliderMargin = box.style.marginLeft;
 		
 	if(selectedMargin.length > 0) {
 		//Subpage
@@ -77,7 +78,7 @@ JBackbone.prototype.goToPage = function(pageId, parentId, parentObject){
 		this.sliderPage(pageId, parentId, slidingMargin);
 		
 		if((parseInt(selectedMargin) - defaultWidth) >= defaultWidth) {			
-			sliderContainer = document.getElementById('slider');
+			sliderContainer = box;
 			var index = this.getChildrenIndex(sliderContainer, parentObject);
 			sliderContainer.insertBefore(document.getElementById(pageId), sliderContainer.children[index+1]);
 			this.resetMargin(defaultWidth);
