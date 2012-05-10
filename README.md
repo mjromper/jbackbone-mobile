@@ -61,7 +61,7 @@ HOW TO USE IT
 			 END OF MODIFICATION SECTION 
 			 **/			
 
-	    	loadAllStuff(pages);
+	    	jbackbone.loadAllStuff(pages);
 
 		}, false);
 	
