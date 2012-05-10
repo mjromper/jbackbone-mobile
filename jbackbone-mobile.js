@@ -11,7 +11,7 @@ window.addEventListener(orientationEvent, function() {
 function JBackbone(){
 	this.lastParentPage = "";
 	this.lastSliderMargin = 0;
-	this.menuTransition = 100;
+	this.menuTransition = 60;
 	this.currentPage = "";
 }
 
@@ -150,9 +150,9 @@ JBackbone.prototype.clickNavHeaderOption = function(class_name) {
 	if(class_name.contains('back')) {					
 		this.sliderPage(this.lastParentPage, this.lastParentPage, (this.lastSliderMargin+defaultWidth));
 	} else if(class_name.contains('menuPic')){
-		var marginSlider = box.style.marginLeft;
-		box = document.getElementById('slider');
-		if (marginSlider ==  (-(this.menuTransition))) {
+		var box = document.getElementById('slider');
+		var marginSlider = box.style.marginLeft;	
+		if (marginSlider ===  (-(this.menuTransition)+"px")) {
 			box.style.marginLeft = (-defaultWidth + "px");
 		}else{
 			box.style.marginLeft = (-this.menuTransition + "px");
