@@ -46,6 +46,7 @@ JBackbone.prototype.init = function(config){
 }
 
 JBackbone.prototype.goToPage = function(nextPage, config){
+	if(this.menuVisible) return;
 	if(!config) config = {};
 	if(!config.addToHistory) config.addToHistory=true;	
 	if(!this.currentPage) this.currentPage = this.config.DEFAULT_PAGE_ID;	
@@ -56,6 +57,7 @@ JBackbone.prototype.goToPage = function(nextPage, config){
 }
 
 JBackbone.prototype.goBack = function(){
+	if(this.menuVisible) return;
 	if(this.history.length==0) return;
 	var previousPage = this.history.pop();
 	console.log("goBack: "+previousPage);
