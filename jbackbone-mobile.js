@@ -23,6 +23,7 @@ JBackbone.prototype.init = function(config){
 	//assign defaults to config or exit if something vital is missing
 	if(!config.pages){alert("You need to specify the list of pages in the config!"); return; }	
 	if(!config.BOX_ID) config.BOX_ID = "slider";
+	if(!config.MENU_ID) config.MENU_ID = "menu-page"
 	if(!config.PAGE_CLASS) config.PAGE_CLASS = "block";
 	if(!config.MENU_BUT_CLASS) config.MENU_BUT_CLASS = "menuBut";
 	if(!config.BACK_BUT_CLASS) config.BACK_BUT_CLASS = "backBut";
@@ -37,10 +38,6 @@ JBackbone.prototype.init = function(config){
 	this.box.style.left = 0;
 	
 	this.addPages();
-	//this.addClickEventsToAnchors();
-	//this.addClickEventsToNavigation();
-	
-	//this.goToPage(this.config.DEFAULT_PAGE);
 }
 
 JBackbone.prototype.goToPage = function(nextPage, config){
@@ -49,7 +46,7 @@ JBackbone.prototype.goToPage = function(nextPage, config){
 	if(!this.currentPage) this.currentPage = this.config.DEFAULT_PAGE;	
 	console.log("goToPage: "+nextPage+" - "+config);
 	this.swapPage(nextPage, "SLIDE-FROM-RIGH");
-	this.history.push(nextPage);
+	this.history.push(this.currentPage);
 	this.currentPage = nextPage;
 }
 
@@ -61,15 +58,38 @@ JBackbone.prototype.goBack = function(){
 	this.currentPage = previousPage;
 }
 
+JBackbone.prototype.hidePage = function(obj){
+	obj.style.display = 'none'; 
+	obj.style.left = '-9999px';
+}
+
 JBackbone.prototype.swapPage = function(nextPage, animation){
 	if(!animation) animation="NONE";
 	var currentPageObject = document.getElementById(this.currentPage);
 	var nextPageObject =  document.getElementById(nextPage);
 	
-	nextPageObject.style.left = (this.x+this.width)+'px';
-	nextPageObject.style.display = 'block';
-	this.x += this.width;
-	this.box.style.left = '-'+this.x+'px'; //comment this to see that page 2 is pushed into view
+	if(animation=='SLIDE-FROM-RIGH'){
+		nextPageObject.style.left = (this.x+this.width)+'px';
+		nextPageObject.style.display = 'block';
+		this.x += this.width;
+		this.box.style.left = '-'+this.x+'px'; 
+	}else if(animation=='SLIDE-FROM-LEFT'){
+		nextPageObject.style.left = (this.x-this.width)+'px';
+		nextPageObject.style.display = 'block';
+		this.x -= this.width;
+		this.box.style.left = '-'+this.x+'px';
+	}else{
+		nextPageObject.style.left = this.x;
+		nextPageObject.style.display = 'block';		
+	}
+	
+	var self = this;
+	if(animation!='NONE'){
+		//needs to be done on timeout to leave the animation enough time to finish
+		setTimeout(function(){ self.hidePage(currentPageObject); }, 1000);
+	}else{		
+		self.hidePage(currentPageObject);
+	}
 }
 
 JBackbone.prototype.getElementsByClassName = function(node,classname) {
