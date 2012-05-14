@@ -17,6 +17,10 @@ function JBackbone(){
 	this.width = 0;
 	this.box = null;
 	this.config = null;
+	
+	this.ANIM_SLIDE_LEFT = "SLIDE_LEFT";
+	this.ANIM_SLIDE_RIGHT = "SLIDE_RIGHT";
+	this.ANIM_NONE = "NONE";
 }
 
 JBackbone.prototype.init = function(config){		
@@ -28,6 +32,7 @@ JBackbone.prototype.init = function(config){
 	if(!config.MENU_BUT_CLASS) config.MENU_BUT_CLASS = "menuBut";
 	if(!config.BACK_BUT_CLASS) config.BACK_BUT_CLASS = "backBut";
 	if(!config.DEFAULT_PAGE) config.DEFAULT_PAGE = "index";
+	if(!config.MENU_MARGIN) config.MENU_MARGIN = 100;
 	
 	var self = this; //save this so we can use it in closures
 	this.config = config;
@@ -45,7 +50,7 @@ JBackbone.prototype.goToPage = function(nextPage, config){
 	if(!config.addToHistory) config.addToHistory=true;	
 	if(!this.currentPage) this.currentPage = this.config.DEFAULT_PAGE;	
 	console.log("goToPage: "+nextPage+" - "+config);
-	this.swapPage(nextPage, "SLIDE-FROM-RIGH");
+	this.swapPage(nextPage, this.ANIM_SLIDE_LEFT);
 	this.history.push(this.currentPage);
 	this.currentPage = nextPage;
 }
@@ -54,7 +59,7 @@ JBackbone.prototype.goBack = function(){
 	if(this.history.length==0) return;
 	var previousPage = this.history.pop();
 	console.log("goBack: "+previousPage);
-	this.swapPage(previousPage, "SLIDE-FROM-LEFT");
+	this.swapPage(previousPage, this.ANIM_SLIDE_RIGHT);
 	this.currentPage = previousPage;
 }
 
@@ -64,27 +69,27 @@ JBackbone.prototype.hidePage = function(obj){
 }
 
 JBackbone.prototype.swapPage = function(nextPage, animation){
-	if(!animation) animation="NONE";
+	if(!animation) animation=this.ANIM_NONE;
 	var currentPageObject = document.getElementById(this.currentPage);
 	var nextPageObject =  document.getElementById(nextPage);
 	
-	if(animation=='SLIDE-FROM-RIGH'){
+	if(animation==this.ANIM_SLIDE_LEFT){
 		nextPageObject.style.left = (this.x+this.width)+'px';
 		nextPageObject.style.display = 'block';
 		this.x += this.width;
-		this.box.style.left = '-'+this.x+'px'; 
-	}else if(animation=='SLIDE-FROM-LEFT'){
+		this.box.style.left = (-this.x)+'px'; 
+	}else if(animation==this.ANIM_SLIDE_RIGHT){
 		nextPageObject.style.left = (this.x-this.width)+'px';
 		nextPageObject.style.display = 'block';
 		this.x -= this.width;
-		this.box.style.left = '-'+this.x+'px';
+		this.box.style.left = (-this.x)+'px';
 	}else{
 		nextPageObject.style.left = this.x;
 		nextPageObject.style.display = 'block';		
 	}
 	
 	var self = this;
-	if(animation!='NONE'){
+	if(animation!=this.ANIM_NONE){
 		//needs to be done on timeout to leave the animation enough time to finish
 		setTimeout(function(){ self.hidePage(currentPageObject); }, 1000);
 	}else{		
@@ -114,12 +119,33 @@ JBackbone.prototype.getElementsByClassName = function(node,classname) {
 	}
 }
 
-JBackbone.prototype.sliderPage = function(pageSelectedId, parentId, gap){	
-	this.currentPage = pageSelectedId;
-	document.getElementById(pageSelectedId).style.display = 'block';
-	document.getElementById(parentId).style.display = 'block';
-	document.getElementById('slider').style.marginLeft = gap+"px";
-	this.lastSliderMargin = gap;
+JBackbone.prototype.showMenu = function(){
+	console.log(this.showMenu);
+	var menuObject = document.getElementById(this.config.MENU_ID);
+	
+	this.x -= (this.width-this.config.MENU_MARGIN);
+	this.box.style.left = (-this.x)+'px';
+		
+	menuObject.style.left = this.x+'px';
+	menuObject.style.display = 'block';
+	
+	this.menuVisible = true;
+}
+
+JBackbone.prototype.hideMenu = function(){
+	var menuObject = document.getElementById(this.config.MENU_ID);
+		
+	this.x += (this.width-this.config.MENU_MARGIN);
+	this.box.style.left = '-'+this.x+'px';
+	
+	var self = this;
+	setTimeout(function(){ self.hidePage(menuObject); }, 1000);
+	this.menuVisible = false;
+}
+
+JBackbone.prototype.toggleMenu = function(){
+	if(this.menuVisible) this.hideMenu();
+	else this.showMenu();
 }
 
 JBackbone.prototype.addPage = function(id, url) {
