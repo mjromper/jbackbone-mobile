@@ -3,10 +3,9 @@ var supportsOrientationChange = "onorientationchange" in window,
 
 String.prototype.contains = function(it) { return this.indexOf(it) != -1; };
 
-/*window.addEventListener(orientationEvent, function() {
-	jbackbone.resetMargin(window.innerWidth);
-	document.getElementById('slider').style.marginLeft = -(window.innerWidth) + "px";
-}, false);*/
+window.addEventListener(orientationEvent, function() {
+	jbackbone.resetWidth();
+}, false);
 
 function JBackbone(){
 	this.lastPage = null;
@@ -43,6 +42,10 @@ JBackbone.prototype.init = function(config){
 	this.box.style.left = 0;
 	
 	this.addPages();
+}
+
+JBackbone.prototype.resetWidth = function(){
+	this.width = window.innerWidth;
 }
 
 JBackbone.prototype.goToPage = function(nextPage, config){
@@ -143,17 +146,28 @@ JBackbone.prototype.getElementsByClassName = function(node,classname) {
 	}
 }
 
-JBackbone.prototype.showMenu = function(menuPage){
+JBackbone.prototype.showMenu = function(menuPage, config){
 	if(!menuPage) menuPage = this.config.DEFAULT_MENU_ID;
-	console.log('showMenu: '+menuPage);
+	if(!config) config={};
+	if(!config.side) config.side = 'left';
+	
+	console.log('showMenu: ' + menuPage);
+	console.log(config);
 	
 	var menuObject = document.getElementById(menuPage);
 	
-	this.x -= (this.width-this.config.MENU_MARGIN);
-	this.box.style.left = (-this.x)+'px';
+	if(config.side=='right'){
+		this.x += (this.width-this.config.MENU_MARGIN);
+		this.box.style.left = (-this.x)+'px';
+		menuObject.style.left = this.x+'px';
+		menuObject.style.display = 'block';
+	}else{
+		this.x -= (this.width-this.config.MENU_MARGIN);
+		this.box.style.left = (-this.x)+'px';
+		menuObject.style.left = this.x+'px';
+		menuObject.style.display = 'block';
+	}
 		
-	menuObject.style.left = this.x+'px';
-	menuObject.style.display = 'block';
 	
 	this.menuVisible = menuPage;
 }
@@ -171,9 +185,9 @@ JBackbone.prototype.hideMenu = function(){
 	this.menuVisible = null;
 }
 
-JBackbone.prototype.toggleMenu = function(menuPage){
+JBackbone.prototype.toggleMenu = function(menuPage, config){
 	if(this.menuVisible) this.hideMenu();
-	else this.showMenu(menuPage);
+	else this.showMenu(menuPage, config);
 }
 
 JBackbone.prototype.addPage = function(id, url) {
