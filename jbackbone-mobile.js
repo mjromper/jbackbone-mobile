@@ -66,13 +66,10 @@ JBackbone.prototype.swapPage = function(nextPage, animation){
 	var currentPageObject = document.getElementById(this.currentPage);
 	var nextPageObject =  document.getElementById(nextPage);
 	
-	console.log((this.x+this.width)+'px');
 	nextPageObject.style.left = (this.x+this.width)+'px';
 	nextPageObject.style.display = 'block';
 	this.x += this.width;
-	console.log(this.box.style.left);
 	this.box.style.left = '-'+this.x+'px'; //comment this to see that page 2 is pushed into view
-	console.log(this.box.style.left);
 }
 
 JBackbone.prototype.getElementsByClassName = function(node,classname) {
