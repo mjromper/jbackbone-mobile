@@ -21,16 +21,6 @@ li {
 	border-bottom: 1px solid #ccc;
 }
 
-.binder {
-	background-color: #6f6f6f;
-	margin:0;
-	padding: 0;
-	width: 100%;
-	height: 100%;
-	float: left;
-	position: relative;
-	overflow: hidden;
-}
 header {
 	background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#AAB8C9), to(#6E84A2), color-stop(.5,#6E84A2));
 	background: -moz-linear-gradient(0% 65% 90deg,#6E84A2, #AAB8C9, #AAB8C9 100%);
@@ -60,24 +50,41 @@ header h3 {
 	top: -30px;
 }
 
+.binder {
+	background-color: #6f6f6f;
+	margin:0;
+	padding: 0;
+	width: 100%;
+	height: 100%;
+	float: left;
+	left: 0;
+	position: static;
+	overflow: hidden;
+}
+
+.slider {
+	padding:0;
+	width: 100%;
+	height:100%;
+	position: relative;
+	left:0;
+	top:0;
+	-webkit-transition:left 0.4s ease-in-out;
+	-moz-transition:left 0.4s ease-in-out;
+	-o-transition:left 0.4s ease-in-out;
+	-ms-transition:left 0.4s ease-in-out;	
+	transition:left 0.4s ease-in-out;
+	border:4px solid red;
+}
+
 .block {
 	padding: 0;
 	margin: 0;
     background: white; 
-	float: left;
 	height: 100%;
 	width: 100%;
 	position: absolute;
 	cursor: pointer;
-}
-.slider {
-	padding:0;
-	margin-left: -100%;
-	-webkit-transition:margin-left 0.4s ease-in-out;
-	-moz-transition:margin-left 0.4s ease-in-out;
-	-o-transition:margin-left 0.4s ease-in-out;
-	-ms-transition:margin-left 0.4s ease-in-out;	
-	transition:margin-left 0.4s ease-in-out;
 }
 	
 #menu-page{

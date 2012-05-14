@@ -3,122 +3,76 @@ var supportsOrientationChange = "onorientationchange" in window,
 
 String.prototype.contains = function(it) { return this.indexOf(it) != -1; };
 
-window.addEventListener(orientationEvent, function() {
+/*window.addEventListener(orientationEvent, function() {
 	jbackbone.resetMargin(window.innerWidth);
 	document.getElementById('slider').style.marginLeft = -(window.innerWidth) + "px";
-}, false);
+}, false);*/
 
 function JBackbone(){
-	this.lastParentPage = "";
-	this.lastSliderMargin = 0;
-	this.menuTransition = 100;
-	this.currentPage = "";
-}
-
-JBackbone.prototype.loadAllStuff = function(pages){
-	this.addContentToIndex(pages);
-	//hideShowPages(this.currentPage);
-
-	box = document.getElementById('slider');
-	/*box.addEventListener('transitionend', function( event ) { hideShowPages(this.currentPage);  }, false );
-	box.addEventListener('webkitTransitionEnd', function( event ) { hideShowPages(this.currentPage); }, false );*/
-
-	//Do reset margins
-	this.resetMargin(window.innerWidth);
-
-	var self = this;
+	this.lastPage = null;
+	this.currentPage = null;
+	this.history = [];
 	
-	var navHeaderElems = this.getElementsByClassName(document, 'menuPic');
-	for (var i = 0; i < navHeaderElems.length; i++){
-		navHeaderElems[i].onclick = function (){
-			self.clickNavHeaderOption(this.className);
-		}
-	}
-
-	var navHeaderElems = this.getElementsByClassName(document, 'back');
-	for (var i = 0; i < navHeaderElems.length; i++){
-		navHeaderElems[i].onclick = function(){
-			self.clickNavHeaderOption(this.className);
-		}	
-	}
-
-	//add click events on all links
-	var aElemts = document.getElementById('slider').getElementsByTagName('a');
-	var self = this;
-	for (var i = 0; i < aElemts.length; i++) {
-		aElemts[i].onclick = function(event){
-            event.preventDefault();
-			page = this.getAttribute('href');
-			parentObject = self.getMyParentWithClassName(this,'block');
-			pageId = page.substring(1, page.length);
-			parentId = parentObject.getAttribute('id');
-			self.goToPage(pageId, parentId , parentObject);
-        };
-	}	
+	this.x = 0;
+	this.width = 0;
+	this.box = null;
+	this.config = null;
 }
 
-JBackbone.prototype.goToPage = function(pageId, parentId, parentObject){
-	defaultWidth = window.innerWidth;
-	this.lastParentPage = parentId;
-	selectedMargin = document.getElementById(pageId).style.marginLeft;
-	sliderMargin = document.getElementById('slider').style.marginLeft;
-		
-	if(selectedMargin.length > 0) {
-		//Subpage
-		var class_name = document.getElementById(pageId).className;
-		if(class_name.contains('sub-block')) {
-			slidingMargin = (parseInt(sliderMargin) - defaultWidth);
-		} 
-		//normal page
-		else if(class_name.contains('block')) {
-			slidingMargin = (parseInt(sliderMargin) - defaultWidth + this.menuTransition);
-		}
-		
-		this.sliderPage(pageId, parentId, slidingMargin);
-		
-		if((parseInt(selectedMargin) - defaultWidth) >= defaultWidth) {			
-			sliderContainer = document.getElementById('slider');
-			var index = this.getChildrenIndex(sliderContainer, parentObject);
-			sliderContainer.insertBefore(document.getElementById(pageId), sliderContainer.children[index+1]);
-			this.resetMargin(defaultWidth);
-		}
-	}		
+JBackbone.prototype.init = function(config){		
+	//assign defaults to config or exit if something vital is missing
+	if(!config.pages){alert("You need to specify the list of pages in the config!"); return; }	
+	if(!config.BOX_ID) config.BOX_ID = "slider";
+	if(!config.PAGE_CLASS) config.PAGE_CLASS = "block";
+	if(!config.MENU_BUT_CLASS) config.MENU_BUT_CLASS = "menuBut";
+	if(!config.BACK_BUT_CLASS) config.BACK_BUT_CLASS = "backBut";
+	if(!config.DEFAULT_PAGE) config.DEFAULT_PAGE = "index";
+	
+	var self = this; //save this so we can use it in closures
+	this.config = config;
+	this.x = 0;
+	this.width = window.innerWidth;
+	this.history = [];
+	this.box = document.getElementById(this.config.BOX_ID); //the container for pages
+	this.box.style.left = 0;
+	
+	this.addPages();
+	//this.addClickEventsToAnchors();
+	//this.addClickEventsToNavigation();
+	
+	//this.goToPage(this.config.DEFAULT_PAGE);
 }
 
-JBackbone.prototype.getChildrenIndex = function(parentObj, childObj){
-	var children = parentObj.children;
-	var child_index = 0;
-	for (var i = 0; i < children.length; i++) {
-  		if (childObj === children[i]) {
-    		child_index = i;
-    		break;
-  		}	
-	}
-	return child_index;
+JBackbone.prototype.goToPage = function(nextPage, config){
+	if(!config) config = {};
+	if(!config.addToHistory) config.addToHistory=true;	
+	if(!this.currentPage) this.currentPage = this.config.DEFAULT_PAGE;	
+	console.log("goToPage: "+nextPage+" - "+config);
+	this.swapPage(nextPage, "SLIDE-FROM-RIGH");
+	this.history.push(nextPage);
+	this.currentPage = nextPage;
 }
 
-JBackbone.prototype.hideShowPages = function(pageSelected){
-		var pages = this.getElementsByClassName(document, 'block');
-		for (var i = 0; i < pages.length; i++) {
-			pages[i].style.display = 'none';
-		}	
-		if (pageSelected){
-			document.getElementById(pageSelected).style.display = 'block';
-		}
-		document.getElementById('menu-page').style.display = 'block';
+JBackbone.prototype.goBack = function(){
+	if(this.history.length==0) return;
+	var previousPage = this.history.pop();
+	console.log("goBack: "+previousPage);
+	this.swapPage(previousPage, "SLIDE-FROM-LEFT");
+	this.currentPage = previousPage;
 }
 
-
-JBackbone.prototype.resetMargin = function(width) {
-	var divLeftMargin = 0;
-	var thisLeftMargin = 0;
-	var elem = this.getElementsByClassName(document, 'block');
-	for (var i = 0; i < elem.length; i++) {
-		thisLeftMargin = divLeftMargin;
-		var thisElem = elem[i];
-		thisElem.style.marginLeft = thisLeftMargin + 'px';
-		divLeftMargin = divLeftMargin + width;
-	}
+JBackbone.prototype.swapPage = function(nextPage, animation){
+	if(!animation) animation="NONE";
+	var currentPageObject = document.getElementById(this.currentPage);
+	var nextPageObject =  document.getElementById(nextPage);
+	
+	console.log((this.x+this.width)+'px');
+	nextPageObject.style.left = (this.x+this.width)+'px';
+	nextPageObject.style.display = 'block';
+	this.x += this.width;
+	console.log(this.box.style.left);
+	this.box.style.left = '-'+this.x+'px'; //comment this to see that page 2 is pushed into view
+	console.log(this.box.style.left);
 }
 
 JBackbone.prototype.getElementsByClassName = function(node,classname) {
@@ -140,32 +94,6 @@ JBackbone.prototype.getElementsByClassName = function(node,classname) {
 			}
 			return classElements;
 		})(classname, node);
-	}
-}
-
-JBackbone.prototype.clickNavHeaderOption = function(class_name) {
-	defaultWidth = window.innerWidth;
-
-	if(class_name.contains('back')) {					
-		this.sliderPage(this.lastParentPage, this.lastParentPage, (this.lastSliderMargin+defaultWidth));
-	} else if(class_name.contains('menuPic')){
-		var marginSlider = box.style.marginLeft;
-		box = document.getElementById('slider');
-		if (marginSlider ==  (-(this.menuTransition))) {
-			box.style.marginLeft = (-defaultWidth + "px");
-		}else{
-			box.style.marginLeft = (-this.menuTransition + "px");
-		}		
-	}
-}
-
-//Recursive function to get closest parent with that classname
-JBackbone.prototype.getMyParentWithClassName = function(elem, classname){
-	var thisParent = elem.parentNode;
-	if (thisParent.className.contains(classname)){
-		return thisParent;
-	}else{
-		return this.getMyParentWithClassName(thisParent, classname);
 	}
 }
 
@@ -220,10 +148,37 @@ JBackbone.prototype.addPage = function(id, url) {
 		}
 }
 
-JBackbone.prototype.addContentToIndex = function(pages) {
+JBackbone.prototype.addPages = function(pages) {
+	if(!pages) pages = this.config.pages;
 	for (var i = 0; i< pages.length ;i++){
 		var htmlFile = pages[i];
-		this.addPage('slider', htmlFile);
+		this.addPage(this.config.BOX_ID, htmlFile);
+	}
+	//hide all pages but the default one
+	var divs = this.getElementsByClassName(this.box,this.config.PAGE_CLASS);
+	for(var i=0; i<divs.length; ++i){
+		var div = divs[i];
+		if(div.id==this.config.DEFAULT_PAGE){
+			div.style.display = 'block';
+			div.style.left = '0px';
+		}else{
+			div.style.display = 'none';
+			div.style.left = '9999px';
+		}
+	}
+	
+}
+
+JBackbone.prototype.addClickEventsToAnchors = function(){
+	var aElemts = document.getElementById(this.config.BOX_ID).getElementsByTagName('a');
+	var self = this;
+	for (var i = 0; i < aElemts.length; i++) {
+		aElemts[i].onclick = function(event){
+            event.preventDefault();
+			page = this.getAttribute('href');
+			pageId = page.substring(1, page.length);
+			self.goToPage(pageId, parentId , parentObject);
+        };
 	}
 }
 
