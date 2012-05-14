@@ -46,13 +46,33 @@ JBackbone.prototype.init = function(config){
 }
 
 JBackbone.prototype.goToPage = function(nextPage, config){
-	if(this.menuVisible) return;
 	if(!config) config = {};
-	if(!config.addToHistory) config.addToHistory=true;	
-	if(!this.currentPage) this.currentPage = this.config.DEFAULT_PAGE_ID;	
-	console.log("goToPage: "+nextPage+" - "+config);
-	this.swapPage(nextPage, this.ANIM_SLIDE_LEFT);
-	this.history.push(this.currentPage);
+	if(typeof config.addToHistory === 'undefined') config.addToHistory=true;	
+	if(typeof config.resetHistory === 'undefined') config.resetHistory=false;
+	if(typeof config.closeMenu === 'undefined') config.closeMenu=true;
+	if(typeof config.animate === 'undefined') config.animate=true;	
+	if(!this.currentPage) this.currentPage = this.config.DEFAULT_PAGE_ID;
+		
+	if(this.menuVisible && config.animate){
+		console.log("refusing to goToPage with animation - "+nextPage+' - '+config.animate);
+		return;	
+	} 
+	
+	console.log("goToPage: "+nextPage);
+	console.log(config);
+		
+	if(this.menuVisible && config.closeMenu) this.hideMenu();
+	
+	var animation = this.ANIM_NONE;
+	if(config.animate) animation = this.ANIM_SLIDE_LEFT;
+	
+	if(this.currentPage!=nextPage){
+		this.swapPage(nextPage, animation);
+	}
+	
+	if(config.addToHistory)	this.history.push(this.currentPage);
+	if(config.resetHistory) this.history = [];
+	
 	this.currentPage = nextPage;
 }
 
@@ -72,7 +92,6 @@ JBackbone.prototype.hidePage = function(obj){
 
 JBackbone.prototype.swapPage = function(nextPage, animation){
 	if(!animation) animation=this.ANIM_NONE;
-	var currentPageObject = document.getElementById(this.currentPage);
 	var nextPageObject =  document.getElementById(nextPage);
 	
 	if(animation==this.ANIM_SLIDE_LEFT){
@@ -86,16 +105,19 @@ JBackbone.prototype.swapPage = function(nextPage, animation){
 		this.x -= this.width;
 		this.box.style.left = (-this.x)+'px';
 	}else{
-		nextPageObject.style.left = this.x;
+		nextPageObject.style.left = this.x+'px';
 		nextPageObject.style.display = 'block';		
 	}
 	
-	var self = this;
-	if(animation!=this.ANIM_NONE){
-		//needs to be done on timeout to leave the animation enough time to finish
-		setTimeout(function(){ self.hidePage(currentPageObject); }, 1000);
-	}else{		
-		self.hidePage(currentPageObject);
+	if(this.currentPage && this.currentPage!=nextPage){		
+		var currentPageObject = document.getElementById(this.currentPage);
+		var self = this;
+		if(animation!=this.ANIM_NONE){
+			//needs to be done on timeout to leave the animation enough time to finish
+			setTimeout(function(){ self.hidePage(currentPageObject); }, 1000);
+		}else{		
+			self.hidePage(currentPageObject);
+		}
 	}
 }
 
@@ -212,7 +234,7 @@ JBackbone.prototype.addPages = function(pages) {
 			div.style.left = '0px';
 		}else{
 			div.style.display = 'none';
-			div.style.left = '9999px';
+			div.style.left = '-9999px';
 		}
 	}
 	
