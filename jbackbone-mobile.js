@@ -27,11 +27,11 @@ JBackbone.prototype.init = function(config){
 	//assign defaults to config or exit if something vital is missing
 	if(!config.pages){alert("You need to specify the list of pages in the config!"); return; }	
 	if(!config.BOX_ID) config.BOX_ID = "slider";
-	if(!config.MENU_ID) config.MENU_ID = "menu-page"
 	if(!config.PAGE_CLASS) config.PAGE_CLASS = "block";
 	if(!config.MENU_BUT_CLASS) config.MENU_BUT_CLASS = "menuBut";
 	if(!config.BACK_BUT_CLASS) config.BACK_BUT_CLASS = "backBut";
-	if(!config.DEFAULT_PAGE) config.DEFAULT_PAGE = "index";
+	if(!config.DEFAULT_PAGE_ID) config.DEFAULT_PAGE_ID = "index";
+	if(!config.DEFAULT_MENU_ID) config.DEFAULT_MENU_ID = "menu-page"
 	if(!config.MENU_MARGIN) config.MENU_MARGIN = 100;
 	
 	var self = this; //save this so we can use it in closures
@@ -48,7 +48,7 @@ JBackbone.prototype.init = function(config){
 JBackbone.prototype.goToPage = function(nextPage, config){
 	if(!config) config = {};
 	if(!config.addToHistory) config.addToHistory=true;	
-	if(!this.currentPage) this.currentPage = this.config.DEFAULT_PAGE;	
+	if(!this.currentPage) this.currentPage = this.config.DEFAULT_PAGE_ID;	
 	console.log("goToPage: "+nextPage+" - "+config);
 	this.swapPage(nextPage, this.ANIM_SLIDE_LEFT);
 	this.history.push(this.currentPage);
@@ -119,9 +119,11 @@ JBackbone.prototype.getElementsByClassName = function(node,classname) {
 	}
 }
 
-JBackbone.prototype.showMenu = function(){
-	console.log(this.showMenu);
-	var menuObject = document.getElementById(this.config.MENU_ID);
+JBackbone.prototype.showMenu = function(menuPage){
+	if(!menuPage) menuPage = this.config.DEFAULT_MENU_ID;
+	console.log('showMenu: '+menuPage);
+	
+	var menuObject = document.getElementById(menuPage);
 	
 	this.x -= (this.width-this.config.MENU_MARGIN);
 	this.box.style.left = (-this.x)+'px';
@@ -129,23 +131,25 @@ JBackbone.prototype.showMenu = function(){
 	menuObject.style.left = this.x+'px';
 	menuObject.style.display = 'block';
 	
-	this.menuVisible = true;
+	this.menuVisible = menuPage;
 }
 
 JBackbone.prototype.hideMenu = function(){
-	var menuObject = document.getElementById(this.config.MENU_ID);
+	if(!this.menuVisible) return;
+	var menuObject = document.getElementById(this.menuVisible);
+	console.log('hideMenu: '+this.menuVisible);
 		
 	this.x += (this.width-this.config.MENU_MARGIN);
 	this.box.style.left = '-'+this.x+'px';
 	
 	var self = this;
 	setTimeout(function(){ self.hidePage(menuObject); }, 1000);
-	this.menuVisible = false;
+	this.menuVisible = null;
 }
 
-JBackbone.prototype.toggleMenu = function(){
+JBackbone.prototype.toggleMenu = function(menuPage){
 	if(this.menuVisible) this.hideMenu();
-	else this.showMenu();
+	else this.showMenu(menuPage);
 }
 
 JBackbone.prototype.addPage = function(id, url) {
@@ -201,7 +205,7 @@ JBackbone.prototype.addPages = function(pages) {
 	var divs = this.getElementsByClassName(this.box,this.config.PAGE_CLASS);
 	for(var i=0; i<divs.length; ++i){
 		var div = divs[i];
-		if(div.id==this.config.DEFAULT_PAGE){
+		if(div.id==this.config.DEFAULT_PAGE_ID){
 			div.style.display = 'block';
 			div.style.left = '0px';
 		}else{
