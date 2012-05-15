@@ -17,16 +17,18 @@
 			 1. Read instructions before 
 			 2. JUST MODIFY THIS SECTION ADDING YOUR PAGES TO THE LIST BELOW 
 			 **/
-			var config = {pages:[			
-			'sample-menu.html', 
-			'sample-menu2.html', 
-			'sample-page1.html',	
-			'sample-page2.html', 
-			'sample-page3.html',
-			'sample-subpage-l1.html',	
-			'sample-subpage-l2.html'
-
-			]};			
+			var config = {
+				pages:[			
+					'sample-menu.html', 
+					'sample-menu2.html', 
+					'sample-page1.html',	
+					'sample-page2.html', 
+					'sample-page3.html',
+					'sample-subpage-l1.html',	
+					'sample-subpage-l2.html'
+				],
+				MENU_MARGIN: 250
+			};			
 
 	    	jbackbone.init(config);
 
@@ -35,8 +37,8 @@
 	</script>
 
 	<body>
-		<div class="binder">						
-			<div id="slider" class="slider"></div>
+		<div id="binder">						
+			<div id="slider"></div>
 		</div>
 	</body>
 </html>	

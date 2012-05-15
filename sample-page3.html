@@ -2,8 +2,8 @@
 	
 	<!-- Header for this page -->
 	<header>							
-		<div class="menuPic" onclick="jbackbone.toggleMenu('menu-page2',{side:'right'});"></div> 	<!-- menu button -->		
-		<div class="back" onclick="jbackbone.goBack();">Back</div>
+		<div class="menuPic" onclick="jbackbone.toggleMenu();">Menu</div> 	<!-- menu button -->		
+		<!-- <div class="back" onclick="jbackbone.goBack();">Back</div> -->
 		<h3>PAGE 3 TITLE</h3>			<!-- titile text -->
 	</header>
 
@@ -13,7 +13,7 @@
 			Here PAGE 3 content
 		</p>
 		<p>
-			Go to subpage LEVEL 1, <a href="#sample-subpage-l1"> CLICK HERE </a>
+			Go to subpage LEVEL 1, <a onclick="jbackbone.goToPage('sample-subpage-l1');" href="#"> CLICK HERE </a>
 		</p>
 	</section>
 </div>

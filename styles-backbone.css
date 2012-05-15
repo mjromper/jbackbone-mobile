@@ -22,35 +22,32 @@ li {
 }
 
 header {
-	background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#AAB8C9), to(#6E84A2), color-stop(.5,#6E84A2));
-	background: -moz-linear-gradient(0% 65% 90deg,#6E84A2, #AAB8C9, #AAB8C9 100%);
-	font-size: 14px;
+	background-color: #a0a0a0; 
 	width: 100%;
-	height: 50px;
-	padding: 0 10px;
+	height: 45px;
+	padding: 0;
 	z-index:999;
-	-webkit-transition:margin-left 0.4s ease-in-out;
-	-moz-transition:margin-left 0.4s ease-in-out;
-	-o-transition:margin-left 0.4s ease-in-out;
-	-ms-transition:margin-left 0.4s ease-in-out;	
-	transition:margin-left 0.4s ease-in-out;
+	-webkit-transition:margin-left 0.2s ease-in-out;
+	-moz-transition:margin-left 0.2s ease-in-out;
+	-o-transition:margin-left 0.2s ease-in-out;
+	-ms-transition:margin-left 0.2s ease-in-out;	
+	transition:margin-left 0.2s ease-in-out;
 }
 
 header h3 {
-	color: #fff;
-	text-shadow: 0px 1px 0px #000;
-	text-align: center;
-	white-space: nowrap;
 	margin: 0 auto;
 	padding: 0;
-	text-align:center;
 	width: 230px;
+	white-space: nowrap;
+	font-weight: normal;
+	text-align:center;
+	clear: both;
 	position:relative;
 	left: 0px;
 	top: -30px;
 }
 
-.binder {
+#binder {
 	background-color: #6f6f6f;
 	margin:0;
 	padding: 0;
@@ -62,18 +59,18 @@ header h3 {
 	overflow: hidden;
 }
 
-.slider {
+#slider {
 	padding:0;
 	width: 100%;
 	height:100%;
 	position: relative;
 	left:0;
 	top:0;
-	-webkit-transition:left 0.4s ease-in-out;
-	-moz-transition:left 0.4s ease-in-out;
-	-o-transition:left 0.4s ease-in-out;
-	-ms-transition:left 0.4s ease-in-out;	
-	transition:left 0.4s ease-in-out;
+	-webkit-transition:left 0.2s ease-in-out;
+	-moz-transition:left 0.2s ease-in-out;
+	-o-transition:left 0.2s ease-in-out;
+	-ms-transition:left 0.2s ease-in-out;	
+	transition:left 0.2s ease-in-out;
 }
 
 .block {
@@ -83,62 +80,40 @@ header h3 {
 	height: 100%;
 	width: 100%;
 	position: absolute;
-	cursor: pointer;
 }
 	
 #menu-page, #menu-page2{
-	background-color: #4f4f4f;
+	background-color: #f0f0f0;
 }
-.navBar{
-	margin-left: 100px;
-}
-.navBar li:hover {
-	background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#4185F4), to(#194FDB), color-stop(.6,#194FDB));
-	background: -moz-linear-gradient(0% 65% 90deg,#194FDB, #4185F4, #4185f4 100%);
-	cursor: pointer;
-}
-.navBar li:hover a.has-child {
-	background: url('images/arrow-hover.png') center right no-repeat;
-}
-.navBar li a,  
-.navBar li a:visited,  
-.navBar li a:hover{
+#navBar li a,  
+#navBar li a:visited,  
+#navBar li a:hover{
 	text-decoration: none;
 	display: block;
 	width: 100%;
-	color: white;
 }
-.has-child {
-	background: url('images/arrow.png') center right no-repeat;
-}
-.has-child:hover {
-	background: url('images/arrow-hover.png') center right no-repeat;
-}
+
 .menuPic {
-	margin:0;
-	padding: 0.5em 0.5em 0.5em 0.2em;
-	border: 1px solid #2e363f;
-	background: url('images/icon-menu.png') bottom left no-repeat;
+	background-color: white;
+	background-position: top left;
+	margin:0 0 0 10px;
+	padding: 0;
 	position: relative;
-    top: 10px;
+    top: 5px;
 	display: block;
-	height: 20px;
-	width: 20px;
+	height: 35px;
+	width: 53px;
 	cursor: pointer;
 }
 
 .back {
 	top: 5px;
-	margin:0;
-	padding: 0.2em 0.5em 0.5em 0.2em;
-    border: 1px solid #2e363f;
+	margin:0 0 0 10px;
+	padding: 3px 0 0 3px;
     position: relative;
-    top: 10px;
-    -moz-border-image: url(images/back-button.png) 2 5 2 13 / 2px 5px 2px 13px; /* Gecko */
-    -webkit-border-image: url(images/back-button.png) 2 5 2 13 / 2px 5px 2px 13px; /* Webkit */
-    color: white;
-    width: 30px;
-    height: 15px;
-    text-decoration: none;
-    text-shadow: 0 -1px 0 black;
+    background-color: white;
+    background-repeat: no-repeat;
+    width: 60px;
+    height: 35px;
+    cursor: pointer;
 }
