@@ -1,0 +1,139 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Jbackbone-mobile by mjromper</title>
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script src="javascripts/main.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+  </head>
+  <body>
+
+      <header>
+        <h1>Jbackbone-mobile</h1>
+        <p>Mobile Web App Framework for easy building Navegation backbone structure - Just native Javascript/HTML5/CSS3</p>
+      </header>
+
+      <div id="banner">
+        <span id="logo"></span>
+
+        <a href="https://github.com/mjromper/jbackbone-mobile" class="button fork"><strong>View On GitHub</strong></a>
+        <div class="downloads">
+          <span>Downloads:</span>
+          <ul>
+            <li><a href="https://github.com/mjromper/jbackbone-mobile/zipball/master" class="button">ZIP</a></li>
+            <li><a href="https://github.com/mjromper/jbackbone-mobile/tarball/master" class="button">TAR</a></li>
+          </ul>
+        </div>
+      </div><!-- end banner -->
+
+    <div class="wrapper">
+      <nav>
+        <ul></ul>
+      </nav>
+      <section>
+        <h1>jbackbone-mobile</h1>
+
+<p>Mobile Web App Framework for easy building Mobile Navigation Structures -&gt; Just using native Javascript, HTML5 and CSS3.
+Working perfectly on iOS and Android devices.</p>
+
+<p><strong>Sample demo running here: <a href="http://lab.ochio.com.es/sample/index.html">RUNNING DEMO</a>.</strong></p>
+
+<h2>Main concepts:</h2>
+
+<p>So, A PAGE:</p>
+
+<ul>
+<li>It should have a main DIV with a unique ID (i.e : 'sample-page').</li>
+<li>As it is a PAGE referenced from Menu it must have JUST the 'block' class.</li>
+<li>As it is a PAGE it should contains a "Menu button" in its header.</li>
+<li>A page always has a 'section' where it contains the page content.</li>
+<li>A page could contain one (or more) link(s) to PAGES or SUBPAGES.</li>
+</ul><p>Then, A SUB-PAGE:</p>
+
+<ul>
+<li>It should have a main DIV with a unique ID (i.e : 'sample-subpage').<br>
+</li>
+<li>As it is a SUBPAGE referenced from another PAGE, it must have BOTH the 'block' and 'sub-block' classes.</li>
+<li>As it is a SUBPAGEPAGE it should contain a "Back button" in its header.</li>
+<li>A subpage always has a 'section' where it contains the subpage content.</li>
+<li>A subpage could contains one (or more) link(s) to PAGES or SUBAPGES.</li>
+</ul><h2>Other concepts:</h2>
+
+<p>There are several reserved IDs and wouldn't be reused. The most important are:</p>
+
+<ul>
+<li>'index', this ID identifies first page to be loaded at start (see sample-page1.html).</li>
+<li>'menu-page', this ID identifies the main menu page, noramlly located on the left side of your application.</li>
+<li>'slider' and 'binder', these two IDs are used for the JS library for animation and sliding porpose.</li>
+</ul><h2>Methods you may know:</h2>
+
+<ul>
+<li><p>jbackbone.goToPage('whatever page ID you want to go')  --&gt; This method takes you the page you want to go.</p></li>
+<li><p>jbackbone.goToPage('whatever page ID you want to go',{animate:false,resetHistory:true}) --&gt; It is the same us the one before but this one is normally used in links in the menu-page. When you navigate from a page to another of your application the library keeps a history of your pages visited. When you start click from the menu is useful to reset your navigation history. (See sampple-menu.html). </p></li>
+<li><p>jbackbone.toggleMenu(); --&gt; Method used for toggle the menu page whenever is clicked the menu button.</p></li>
+<li><p>jbackbone.goBack(); --&gt; Method used for go back on your navigation history when you click on back button on a deeper page.</p></li>
+</ul><h2>HOW TO USE IT</h2>
+
+<p>1.- Create an index.html page using the "index.html" sample code provided. Notice how to link the javascript library into the header section.</p>
+
+<p>2.- Add a javascript code in your header as this one, where to indicate which pages build your application.</p>
+
+<pre><code>&lt;script type="text/javascript"&gt;
+    document.addEventListener("DOMContentLoaded", function () {
+
+        /**
+         IMPORTANT!!!!!
+         1. Read instructions before 
+         2. JUST MODIFY THIS SECTION ADDING YOUR PAGES TO THE LIST BELOW 
+         **/
+        var config = {
+            pages:[         
+                'sample-menu.html', //
+                'sample-menu2.html', 
+                'sample-page1.html',    
+                'sample-page2.html', 
+                'sample-page3.html',
+                'sample-subpage-l1.html',   
+                'sample-subpage-l2.html'
+            ],
+            MENU_MARGIN: 80   //Margin it leaves on the menu after sliding.
+        };  
+
+        jbackbone.init(config);
+
+    }, false);
+
+&lt;/script&gt;
+</code></pre>
+
+<p>3.- Implement as many PAGES as you want according the instructions given and examples provided.</p>
+
+<p>4.- HAVE FUN!!!</p>
+      </section>
+      <footer>
+        <p>Project maintained by <a href="https://github.com/mjromper">mjromper</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="http://twitter.com/#!/michigangraham">mattgraham</a></small></p>
+      </footer>
+    </div>
+    <!--[if !IE]><script>fixScale(document);</script><!--<![endif]-->
+              <script type="text/javascript">
+            var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+            document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+          </script>
+          <script type="text/javascript">
+            try {
+              var pageTracker = _gat._getTracker("UA-31615107-1");
+            pageTracker._trackPageview();
+            } catch(err) {}
+          </script>
+
+  </body>
+</html>
