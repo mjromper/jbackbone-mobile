@@ -7,27 +7,40 @@ Working perfectly on iOS and Android devices.
 
 Main concepts:
 -------------
-
-+ PAGES: one 'page' it is always linked from the Menu as an achor using its ID.
-+ SUB-PAGES, Level 1: one 'subpage level 1' could be linked from another PAGE using its ID, NEVER from the Menu.
-+ SUB-PAGES, Level 2: one 'subpage level 2' is always linked from another SUB-PAGE Level 1.
-...
-+ SUB-PAGES, Level N: one 'subpage level N' is always linked from another SUB-PAGE Level (N-1).
-
-
 So, A PAGE:
 - It should have a main DIV with a unique ID (i.e : 'sample-page').
 - As it is a PAGE referenced from Menu it must have JUST the 'block' class.
 - As it is a PAGE it should contains a "Menu button" in its header.
 - A page always has a 'section' where it contains the page content.
-- A page could contains one (or more) Link(s) to another SUBPAGE, then this SUBPAGE would be a supage level 1.
+- A page could contain one (or more) link(s) to PAGES or SUBPAGES.
 
 Then, A SUB-PAGE:
 - It should have a main DIV with a unique ID (i.e : 'sample-subpage').	
 - As it is a SUBPAGE referenced from another PAGE, it must have BOTH the 'block' and 'sub-block' classes.
 - As it is a SUBPAGEPAGE it should contain a "Back button" in its header.
 - A subpage always has a 'section' where it contains the subpage content.
-- A subpage could contains one (or more) Link(s) to another new SUB-PAGE, then this new SUB-PAGE would be a supage one level deeper.
+- A subpage could contains one (or more) link(s) to PAGES or SUBAPGES.
+
+Other concepts:
+---------------
+There are several reserved IDs and wouldn't be reused. The most important are:
+
+- 'index', this ID identifies first page to be loaded at start (see sample-page1.html).
+- 'menu-page', this ID identifies the main menu page, noramlly located on the left side of your application.
+- 'slider' and 'binder', these two IDs are used for the JS library for animation and sliding porpose.
+
+
+Methods you may know:
+--------------------
+
+- jbackbone.goToPage('whatever page ID you want to go')  --> This method takes you the page you want to go.
+
+
+- jbackbone.goToPage('whatever page ID you want to go',{animate:false,resetHistory:true}) --> It is the same us the one before but this one is normally used in links in the menu-page. When you navigate from a page to another of your application the library keeps a history of your pages visited. When you start click from the menu is useful to reset your navigation history. (See sampple-menu.html). 
+
+- jbackbone.toggleMenu(); --> Method used for toggle the menu page whenever is clicked the menu button.
+
+- jbackbone.goBack(); --> Method used for go back on your navigation history when you click on back button on a deeper page.
 
 
 HOW TO USE IT
@@ -45,35 +58,26 @@ HOW TO USE IT
 			 1. Read instructions before 
 			 2. JUST MODIFY THIS SECTION ADDING YOUR PAGES TO THE LIST BELOW 
 			 **/
-			var pages = [
+			var config = {
+				pages:[			
+					'sample-menu.html', //
+					'sample-menu2.html', 
+					'sample-page1.html',	
+					'sample-page2.html', 
+					'sample-page3.html',
+					'sample-subpage-l1.html',	
+					'sample-subpage-l2.html'
+				],
+				MENU_MARGIN: 80   //Margin it leaves on the menu after sliding.
+			};	
 
-			'sample-menu.html', /* This is how the menu should look like, IT SHOULD BE THE FIST PAGE in the list!!! */
-			'sample-page1.html',	/* This is the fist page will be shown. Should be always following the menu */	
-
-
-			/* Rest of the pages. Don't worry about the order */
-			'sample-page2.html', 
-			'sample-page3.html',
-			'sample-subpage-l1.html',	
-			'sample-subpage-l2.html'
-
-			];
-			/**
-			 END OF MODIFICATION SECTION 
-			 **/			
-
-	    	jbackbone.loadAllStuff(pages);
+	    	jbackbone.init(config);
 
 		}, false);
 
-		document.addEventListener("page-change", function(event){
-			console.log("page-change");
-			console.log(event);
-		});
-
 	</script>
 
-3.- Implement as many PAGES and SUBPAGES as you want according the instructions given and examples provided.
+3.- Implement as many PAGES as you want according the instructions given and examples provided.
 
 4.- HAVE FUN!!!
 	

@@ -1,35 +1,7 @@
-<!-- 
-Main concepts:
-
-+ PAGES: one 'page' it is always linked from the Menu as an achor using its ID.
-+ SUB-PAGES, Level 1: one 'subpage level 1' could be linked from another PAGE using its ID, NEVER from the Menu.
-+ SUB-PAGES, Level 2: one 'subpage level 2' is always linked from another SUB-PAGE Level 1.
-...
-+ SUB-PAGES, Level N: one 'subpage level N' is always linked from another SUB-PAGE Level (N-1).
-
-
-
-So, A PAGE:
-	- It should have a main DIV with a unique ID (i.e : 'sample-page').
-	- As it is a PAGE referenced from Menu it must have JUST the 'block' class.
-	- As it is a PAGE it should contains a "menu button" in its header.
-	- A page always has a 'section' where it contains the page content.
-	- A page could contains one (or more) Link to another SUBPAGE, then this SUBPAGE would be a supage level 1.
-
-Then, A SUB-PAGE:
-	- It should have a main DIV with a unique ID (i.e : 'page2-page').	
-	- As it is a SUBPAGE referenced from another PAGE it must have BOTH the 'block' and 'sub-block' classes.
-	- As it is a SUBPAGEPAGE it should contains a "back button" in its header.
-	- A subpage always has a 'section' where it contains the subpage content.
-	- A subpage could contains one (or more) Link to another new SUBPAGE, then this new SUBPAGE would be a supage level N.
-
--->
-
-<!-- Sample SUB-PAGE backbone structure -->
-<div id="sample-subpage-l1" class="block  sub-block">
+<div id="sample-subpage-l1" class="block sub-block">
 	<header>
 		<!-- back button -->
-		<div class="back">Back</div>
+		<div class="back" onclick="jbackbone.goBack();">Back</div>
 
 		<h3>SUBPAGE, level-1</h3>		
 	</header>
@@ -39,7 +11,7 @@ Then, A SUB-PAGE:
 			Here SUBPAGE level 1 content
 		</p>
 		<p>
-			Go to Subpage 3, Level-2 <a href="#sample-subpage-l2">Click here</a>
+			Go to Subpage 3, Level-2 <a onclick="jbackbone.goToPage('sample-subpage-l2');" href="#">Click here</a>
 		</p>						
 	</section>
 </div>

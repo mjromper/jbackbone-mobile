@@ -17,37 +17,34 @@
 			 1. Read instructions before 
 			 2. JUST MODIFY THIS SECTION ADDING YOUR PAGES TO THE LIST BELOW 
 			 **/
-			var pages = [
-			
-			'sample-menu.html', /* This is how the menu should look like, IT SHOULD BE THE FIST PAGE in the list!!! */
-			'sample-page1.html',	/* This is the fist page will be shown. Should be always following the menu */	
+			var config = {
+				pages:[			
+					'sample-menu.html', 
+					'sample-menu2.html', 
+					'sample-page1.html',	
+					'sample-page2.html', 
+					'sample-page3.html',
+					'sample-subpage-l1.html',	
+					'sample-subpage-l2.html'
+				],
+				MENU_MARGIN: 80   //Margin it leaves on the menu after sliding.
+			};	
 
-						
-			/* Rest of the pages. Don't worry about the order */
-			'sample-page2.html', 
-			'sample-page3.html',
-			'sample-subpage-l1.html',	
-			'sample-subpage-l2.html'
-
-			];
 			/**
-			 END OF MODIFICATION SECTION 
-			 **/			
+			 IMPORTANT!!!!!
+			 1. Read instructions before 
+			 2. JUST MODIFY THIS SECTION ADDING YOUR PAGES TO THE LIST BELOW 
+			 **/		
 
-	    	jbackbone.loadAllStuff(pages);
+	    	jbackbone.init(config);
 
 		}, false);
-		
-		document.addEventListener("page-change", function(event){
-			console.log("page-change");
-			console.log(event);
-		});
 	
 	</script>
 
 	<body>
-		<div class="binder">						
-			<div id="slider" class="slider"></div>
+		<div id="binder">						
+			<div id="slider"></div>
 		</div>
 	</body>
 </html>	

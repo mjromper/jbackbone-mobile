@@ -4,229 +4,266 @@ var supportsOrientationChange = "onorientationchange" in window,
 String.prototype.contains = function(it) { return this.indexOf(it) != -1; };
 
 window.addEventListener(orientationEvent, function() {
-   jbackbone.resetMargin(window.innerWidth);
-   document.getElementById('slider').style.marginLeft = -(window.innerWidth) + "px";
+	jbackbone.resetWidth();
 }, false);
 
 function JBackbone(){
-	this.lastParentPage = "";
-	this.lastSliderMargin = 0;
-	this.menuTransition = 60;
-	this.currentPage = "";
+	this.lastPage = null;
+	this.currentPage = null;
+	this.history = [];
+	
+	this.x = 0;
+	this.width = 0;
+	this.box = null;
+	this.config = null;
+	
+	this.ANIM_SLIDE_LEFT = "SLIDE_LEFT";
+	this.ANIM_SLIDE_RIGHT = "SLIDE_RIGHT";
+	this.ANIM_NONE = "NONE";
 }
 
-JBackbone.prototype.loadAllStuff = function(pages){
-	this.addContentToIndex(pages);
-	//hideShowPages(this.currentPage);
-
-	box = document.getElementById('slider');
-	/*box.addEventListener('transitionend', function( event ) { hideShowPages(this.currentPage);  }, false );
-	box.addEventListener('webkitTransitionEnd', function( event ) { hideShowPages(this.currentPage); }, false );*/
-
-	//Do reset margins
-	this.resetMargin(window.innerWidth);
-
-	var self = this;
+JBackbone.prototype.init = function(config){		
+	//assign defaults to config or exit if something vital is missing
+	if(!config.pages){alert("You need to specify the list of pages in the config!"); return; }	
+	if(!config.BOX_ID) config.BOX_ID = "slider";
+	if(!config.PAGE_CLASS) config.PAGE_CLASS = "block";
+	if(!config.MENU_BUT_CLASS) config.MENU_BUT_CLASS = "menuBut";
+	if(!config.BACK_BUT_CLASS) config.BACK_BUT_CLASS = "backBut";
+	if(!config.DEFAULT_PAGE_ID) config.DEFAULT_PAGE_ID = "index";
+	if(!config.DEFAULT_MENU_ID) config.DEFAULT_MENU_ID = "menu-page"
+	if(!config.MENU_MARGIN) config.MENU_MARGIN = 100;
 	
-	var navHeaderElems = this.getElementsByClassName(document, 'menuPic');
-	for (var i = 0; i < navHeaderElems.length; i++){
-		navHeaderElems[i].onclick = function (){
-			self.clickNavHeaderOption(this.className);
+	var self = this; //save this so we can use it in closures
+	this.config = config;
+	this.x = 0;
+	this.width = window.innerWidth;
+	this.history = [];
+	this.box = document.getElementById(this.config.BOX_ID); //the container for pages
+	this.box.style.left = 0;
+	
+	this.addPages();
+}
+
+JBackbone.prototype.resetWidth = function(){
+	this.width = window.innerWidth;
+}
+
+JBackbone.prototype.goToPage = function(nextPage, config){
+	if(!config) config = {};
+	if(typeof config.addToHistory === 'undefined') config.addToHistory=true;	
+	if(typeof config.resetHistory === 'undefined') config.resetHistory=false;
+	if(typeof config.closeMenu === 'undefined') config.closeMenu=true;
+	if(typeof config.animate === 'undefined') config.animate=true;	
+	if(!this.currentPage) this.currentPage = this.config.DEFAULT_PAGE_ID;
+		
+	if(this.menuVisible && config.animate){
+		console.log("refusing to goToPage with animation - "+nextPage+' - '+config.animate);
+		return;	
+	} 
+	
+	console.log("goToPage: "+nextPage);
+	console.log(config);
+		
+	if(this.menuVisible && config.closeMenu) this.hideMenu();
+	
+	var animation = this.ANIM_NONE;
+	if(config.animate) animation = this.ANIM_SLIDE_LEFT;
+	
+	if(this.currentPage!=nextPage){
+		this.swapPage(nextPage, animation);
+	}
+	
+	if(config.addToHistory)	this.history.push(this.currentPage);
+	if(config.resetHistory) this.history = [];
+	
+	this.currentPage = nextPage;
+}
+
+JBackbone.prototype.goBack = function(){
+	if(this.menuVisible) return;
+	if(this.history.length==0) return;
+	var previousPage = this.history.pop();
+	console.log("goBack: "+previousPage);
+	this.swapPage(previousPage, this.ANIM_SLIDE_RIGHT);
+	this.currentPage = previousPage;
+}
+
+JBackbone.prototype.hidePage = function(obj){
+	obj.style.display = 'none'; 
+	obj.style.left = '-9999px';
+}
+
+JBackbone.prototype.swapPage = function(nextPage, animation){
+	if(!animation) animation=this.ANIM_NONE;
+	var nextPageObject =  document.getElementById(nextPage);
+	
+	if(animation==this.ANIM_SLIDE_LEFT){
+		nextPageObject.style.left = (this.x+this.width)+'px';
+		nextPageObject.style.display = 'block';
+		this.x += this.width;
+		this.box.style.left = (-this.x)+'px'; 
+	}else if(animation==this.ANIM_SLIDE_RIGHT){
+		nextPageObject.style.left = (this.x-this.width)+'px';
+		nextPageObject.style.display = 'block';
+		this.x -= this.width;
+		this.box.style.left = (-this.x)+'px';
+	}else{
+		nextPageObject.style.left = this.x+'px';
+		nextPageObject.style.display = 'block';		
+	}
+	
+	if(this.currentPage && this.currentPage!=nextPage){		
+		var currentPageObject = document.getElementById(this.currentPage);
+		var self = this;
+		if(animation!=this.ANIM_NONE){
+			//needs to be done on timeout to leave the animation enough time to finish
+			setTimeout(function(){ self.hidePage(currentPageObject); }, 1000);
+		}else{		
+			self.hidePage(currentPageObject);
 		}
 	}
+}
 
-	var navHeaderElems = this.getElementsByClassName(document, 'back');
-	for (var i = 0; i < navHeaderElems.length; i++){
-		navHeaderElems[i].onclick = function(){
-			self.clickNavHeaderOption(this.className);
-		}	
+JBackbone.prototype.getElementsByClassName = function(node,classname) {
+	if (node.getElementsByClassName) { // use native implementation if available
+		return node.getElementsByClassName(classname);
+	} else {
+		return (function getElementsByClass(searchClass,node) {
+			if ( node == null ) node = document;
+			var classElements = [],
+			els = node.getElementsByTagName("*"),
+			elsLen = els.length,
+			pattern = new RegExp("(^|\\s)"+searchClass+"(\\s|$)"), i, j;
+
+			for (i = 0, j = 0; i < elsLen; i++) {
+				if ( pattern.test(els[i].className) ) {
+					classElements[j] = els[i];
+					j++;
+				}
+			}
+			return classElements;
+		})(classname, node);
 	}
+}
 
-	//add click events on all links
-	var aElemts = document.getElementById('slider').getElementsByTagName('a');
+JBackbone.prototype.showMenu = function(menuPage, config){
+	if(!menuPage) menuPage = this.config.DEFAULT_MENU_ID;
+	if(!config) config={};
+	if(!config.side) config.side = 'left';
+	
+	console.log('showMenu: ' + menuPage);
+	console.log(config);
+	
+	var menuObject = document.getElementById(menuPage);
+	
+	if(config.side=='right'){
+		this.x += (this.width-this.config.MENU_MARGIN);
+		this.box.style.left = (-this.x)+'px';
+		menuObject.style.left = this.x+'px';
+		menuObject.style.display = 'block';
+	}else{
+		this.x -= (this.width-this.config.MENU_MARGIN);
+		this.box.style.left = (-this.x)+'px';
+		menuObject.style.left = this.x+'px';
+		menuObject.style.display = 'block';
+	}
+		
+	
+	this.menuVisible = menuPage;
+}
+
+JBackbone.prototype.hideMenu = function(){
+	if(!this.menuVisible) return;
+	var menuObject = document.getElementById(this.menuVisible);
+	console.log('hideMenu: '+this.menuVisible);
+		
+	this.x += (this.width-this.config.MENU_MARGIN);
+	this.box.style.left = '-'+this.x+'px';
+	
+	var self = this;
+	setTimeout(function(){ self.hidePage(menuObject); }, 1000);
+	this.menuVisible = null;
+}
+
+JBackbone.prototype.toggleMenu = function(menuPage, config){
+	if(this.menuVisible) this.hideMenu();
+	else this.showMenu(menuPage, config);
+}
+
+JBackbone.prototype.addPage = function(id, url) {
+	var req = false;
+	// For Safari, Firefox, and other non-MS browsers
+	if (window.XMLHttpRequest) {
+		try {
+			req = new XMLHttpRequest();
+		} catch (e) {
+			req = false;
+		}
+	} else if (window.ActiveXObject) {
+		// For Internet Explorer on Windows
+		try {
+			req = new ActiveXObject("Msxml2.XMLHTTP");
+		} catch (e) {
+			try {
+				req = new ActiveXObject("Microsoft.XMLHTTP");
+			} catch (e) {
+				req = false;
+			}
+		}
+	}
+	var element = document.getElementById(id);
+	if (!element) {
+		alert("Bad id " + id + "passed to clientSideInclude." +
+		"You need a div or span element " +
+		"with this id in your page.");
+		return;
+	}
+	if (req) {
+		// Synchronous request, wait till we have it all
+		req.open('GET', url, false);
+		req.send(null);
+		element.innerHTML = element.innerHTML+req.responseText;
+	} else {
+		element.innerHTML =
+		"Sorry, your browser does not support " +
+		"XMLHTTPRequest objects. This page requires " +
+		"Internet Explorer 5 or better for Windows, " +
+		"or Firefox for any system, or Safari. Other " +
+		"compatible browsers may also exist.";
+		}
+}
+
+JBackbone.prototype.addPages = function(pages) {
+	if(!pages) pages = this.config.pages;
+	for (var i = 0; i< pages.length ;i++){
+		var htmlFile = pages[i];
+		this.addPage(this.config.BOX_ID, htmlFile);
+	}
+	//hide all pages but the default one
+	var divs = this.getElementsByClassName(this.box,this.config.PAGE_CLASS);
+	for(var i=0; i<divs.length; ++i){
+		var div = divs[i];
+		if(div.id==this.config.DEFAULT_PAGE_ID){
+			div.style.display = 'block';
+			div.style.left = '0px';
+		}else{
+			div.style.display = 'none';
+			div.style.left = '-9999px';
+		}
+	}
+	
+}
+
+JBackbone.prototype.addClickEventsToAnchors = function(){
+	var aElemts = document.getElementById(this.config.BOX_ID).getElementsByTagName('a');
 	var self = this;
 	for (var i = 0; i < aElemts.length; i++) {
 		aElemts[i].onclick = function(event){
             event.preventDefault();
 			page = this.getAttribute('href');
-			parentObject = self.getMyParentWithClassName(this,'block');
 			pageId = page.substring(1, page.length);
-			parentId = parentObject.getAttribute('id');
 			self.goToPage(pageId, parentId , parentObject);
         };
-	}	
-}
-
-JBackbone.prototype.goToPage = function(pageId, parentId, parentObject){
-	defaultWidth = window.innerWidth;
-	this.lastParentPage = parentId;
-	var box = document.getElementById('slider');
-	selectedMargin = document.getElementById(pageId).style.marginLeft;
-	sliderMargin = box.style.marginLeft;
-		
-	if(selectedMargin.length > 0) {
-		//Subpage
-		var class_name = document.getElementById(pageId).className;
-		if(class_name.contains('sub-block')) {
-			slidingMargin = (parseInt(sliderMargin) - defaultWidth);
-		} 
-		//normal page
-		else if(class_name.contains('block')) {
-			slidingMargin = (parseInt(sliderMargin) - defaultWidth + this.menuTransition);
-		}
-		
-		this.sliderPage(pageId, parentId, slidingMargin);
-		
-		if((parseInt(selectedMargin) - defaultWidth) >= defaultWidth) {			
-			sliderContainer = box;
-			var index = this.getChildrenIndex(sliderContainer, parentObject);
-			sliderContainer.insertBefore(document.getElementById(pageId), sliderContainer.children[index+1]);
-			this.resetMargin(defaultWidth);
-		}
-	}		
-}
-
-JBackbone.prototype.getChildrenIndex = function(parentObj, childObj){
-	var children = parentObj.children;
-	var child_index = 0;
-	for (var i = 0; i < children.length; i++) {
-  		if (childObj === children[i]) {
-    		child_index = i;
-    		break;
-  		}	
-	}
-	return child_index;
-}
-
-JBackbone.prototype.hideShowPages = function(pageSelected){
-		var pages = this.getElementsByClassName(document, 'block');
-		for (var i = 0; i < pages.length; i++) {
-			pages[i].style.display = 'none';
-		}	
-		if (pageSelected){
-			document.getElementById(pageSelected).style.display = 'block';
-		}
-		document.getElementById('menu-page').style.display = 'block';
-}
-
-
-JBackbone.prototype.resetMargin = function(width) {
-	var divLeftMargin = 0;
-	var thisLeftMargin = 0;
-	var elem = this.getElementsByClassName(document, 'block');
-	for (var i = 0; i < elem.length; i++) {
-		thisLeftMargin = divLeftMargin;
-		var thisElem = elem[i];
-		thisElem.style.marginLeft = thisLeftMargin + 'px';
-		divLeftMargin = divLeftMargin + width;
-	}
-}
-
-JBackbone.prototype.getElementsByClassName = function(node,classname) {
-  if (node.getElementsByClassName) { // use native implementation if available
-    return node.getElementsByClassName(classname);
-  } else {
-    return (function getElementsByClass(searchClass,node) {
-        if ( node == null )
-          node = document;
-        var classElements = [],
-            els = node.getElementsByTagName("*"),
-            elsLen = els.length,
-            pattern = new RegExp("(^|\\s)"+searchClass+"(\\s|$)"), i, j;
-
-        for (i = 0, j = 0; i < elsLen; i++) {
-          if ( pattern.test(els[i].className) ) {
-              classElements[j] = els[i];
-              j++;
-          }
-        }
-        return classElements;
-    })(classname, node);
-  }
-}
-
-JBackbone.prototype.clickNavHeaderOption = function(class_name) {
-	defaultWidth = window.innerWidth;
-
-	if(class_name.contains('back')) {					
-		this.sliderPage(this.lastParentPage, this.lastParentPage, (this.lastSliderMargin+defaultWidth));
-	} else if(class_name.contains('menuPic')){
-		var box = document.getElementById('slider');
-		var marginSlider = box.style.marginLeft;	
-		if (marginSlider ===  (-(this.menuTransition)+"px")) {
-			box.style.marginLeft = (-defaultWidth + "px");
-		}else{
-			box.style.marginLeft = (-this.menuTransition + "px");
-		}		
-	}
-}
-
-//Recursive function to get closest parent with that classname
-JBackbone.prototype.getMyParentWithClassName = function(elem, classname){
-	var thisParent = elem.parentNode;
-	if (thisParent.className.contains(classname)){
-		return thisParent;
-	}else{
-		return this.getMyParentWithClassName(thisParent, classname);
-	}
-}
-
-JBackbone.prototype.sliderPage = function(pageSelectedId, parentId, gap){	
-	this.currentPage = pageSelectedId;
-	document.getElementById(pageSelectedId).style.display = 'block';
-	document.getElementById(parentId).style.display = 'block';
-	document.getElementById('slider').style.marginLeft = gap+"px";
-	this.lastSliderMargin = gap;
-}
-
-JBackbone.prototype.addPage = function(id, url) {
-  var req = false;
-  // For Safari, Firefox, and other non-MS browsers
-  if (window.XMLHttpRequest) {
-    try {
-      req = new XMLHttpRequest();
-    } catch (e) {
-      req = false;
-    }
-  } else if (window.ActiveXObject) {
-    // For Internet Explorer on Windows
-    try {
-      req = new ActiveXObject("Msxml2.XMLHTTP");
-    } catch (e) {
-      try {
-        req = new ActiveXObject("Microsoft.XMLHTTP");
-      } catch (e) {
-        req = false;
-      }
-    }
-  }
- var element = document.getElementById(id);
- if (!element) {
-  alert("Bad id " + id + 
-   "passed to clientSideInclude." +
-   "You need a div or span element " +
-   "with this id in your page.");
-  return;
- }
-  if (req) {
-    // Synchronous request, wait till we have it all
-    req.open('GET', url, false);
-    req.send(null);
-    element.innerHTML = element.innerHTML+req.responseText;
-  } else {
-    element.innerHTML =
-   "Sorry, your browser does not support " +
-      "XMLHTTPRequest objects. This page requires " +
-      "Internet Explorer 5 or better for Windows, " +
-      "or Firefox for any system, or Safari. Other " +
-      "compatible browsers may also exist.";
-  }
-}
-
-JBackbone.prototype.addContentToIndex = function(pages) {
-	for (var i = 0; i< pages.length ;i++){
-		var htmlFile = pages[i];
-		this.addPage('slider', htmlFile);
 	}
 }
 
