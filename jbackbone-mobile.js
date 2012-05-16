@@ -43,7 +43,8 @@ JBackbone.prototype.init = function(config){
 	this.box = document.getElementById(this.config.BOX_ID); //the container for pages
 	this.box.style.left = 0;
 	
-	this.addPages();
+	this.addPages();	
+	this.notifyPageChange(null, this.config.DEFAULT_PAGE_ID); //trigger the page-change event for the first page
 }
 
 JBackbone.prototype.resetWidth = function(){
@@ -205,18 +206,18 @@ JBackbone.prototype.addPageChangeListener = function(func, page){
 
 JBackbone.prototype.notifyPageChange = function(oldPage, newPage){
 	if(typeof newPage != 'string') return;
-	//notify specific page
-	var specificListeners = this.pageChangeListeners[newPage]; 
-	if(typeof specificListeners == 'object' && Array.isArray(specificListeners)){
-		for(var i=0; i<specificListeners.length; ++i){
-			specificListeners[i](oldPage,newPage);
-		}
-	}
 	//notify $all	
 	var allListeners = this.pageChangeListeners['$all']; 
 	if(typeof allListeners == 'object' && Array.isArray(allListeners)){
 		for(var i=0; i<allListeners.length; ++i){
 			allListeners[i](oldPage,newPage);
+		}
+	}
+	//notify specific page
+	var specificListeners = this.pageChangeListeners[newPage]; 
+	if(typeof specificListeners == 'object' && Array.isArray(specificListeners)){
+		for(var i=0; i<specificListeners.length; ++i){
+			specificListeners[i](oldPage,newPage);
 		}
 	}
 }
