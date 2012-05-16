@@ -39,7 +39,6 @@ JBackbone.prototype.init = function(config){
 	this.x = 0;
 	this.width = window.innerWidth;
 	this.history = [];
-	this.pageChangeListeners = { $all: [] };
 	this.box = document.getElementById(this.config.BOX_ID); //the container for pages
 	this.box.style.left = 0;
 	
