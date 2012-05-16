@@ -37,6 +37,15 @@
 			 **/		
 
 	    	jbackbone.init(config);
+	
+			/** Track all page changes change **/
+			jbackbone.addPageChangeListener(function(oldPage,newPage){
+				console.log('Page changed from '+oldPage+' to '+newPage);
+			});
+			/** Track specific page change **/
+			jbackbone.addPageChangeListener(function(oldPage,newPage){
+				console.log('Special page is here!');
+			},'sample-page2');	
 
 		}, false);
 	

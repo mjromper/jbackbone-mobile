@@ -11,6 +11,7 @@ function JBackbone(){
 	this.lastPage = null;
 	this.currentPage = null;
 	this.history = [];
+	this.pageChangeListeners = { $all: [] };
 	
 	this.x = 0;
 	this.width = 0;
@@ -38,6 +39,7 @@ JBackbone.prototype.init = function(config){
 	this.x = 0;
 	this.width = window.innerWidth;
 	this.history = [];
+	this.pageChangeListeners = { $all: [] };
 	this.box = document.getElementById(this.config.BOX_ID); //the container for pages
 	this.box.style.left = 0;
 	
@@ -76,7 +78,9 @@ JBackbone.prototype.goToPage = function(nextPage, config){
 	if(config.addToHistory)	this.history.push(this.currentPage);
 	if(config.resetHistory) this.history = [];
 	
+	var oldPage = this.currentPage;
 	this.currentPage = nextPage;
+	this.notifyPageChange(oldPage, this.currentPage);
 }
 
 JBackbone.prototype.goBack = function(){
@@ -85,7 +89,9 @@ JBackbone.prototype.goBack = function(){
 	var previousPage = this.history.pop();
 	console.log("goBack: "+previousPage);
 	this.swapPage(previousPage, this.ANIM_SLIDE_RIGHT);
-	this.currentPage = previousPage;
+	var oldPage = this.currentPage;
+	this.currentPage = previousPage;	
+	this.notifyPageChange(oldPage, this.currentPage);
 }
 
 JBackbone.prototype.hidePage = function(obj){
@@ -188,6 +194,31 @@ JBackbone.prototype.hideMenu = function(){
 JBackbone.prototype.toggleMenu = function(menuPage, config){
 	if(this.menuVisible) this.hideMenu();
 	else this.showMenu(menuPage, config);
+}
+
+JBackbone.prototype.addPageChangeListener = function(func, page){
+	if(typeof func != 'function') return;
+	if(typeof page != 'string') page = '$all';
+	if(!this.pageChangeListeners[page]) this.pageChangeListeners[page] = [];
+	this.pageChangeListeners[page].push(func);
+}
+
+JBackbone.prototype.notifyPageChange = function(oldPage, newPage){
+	if(typeof newPage != 'string') return;
+	//notify specific page
+	var specificListeners = this.pageChangeListeners[newPage]; 
+	if(typeof specificListeners == 'object' && Array.isArray(specificListeners)){
+		for(var i=0; i<specificListeners.length; ++i){
+			specificListeners[i](oldPage,newPage);
+		}
+	}
+	//notify $all	
+	var allListeners = this.pageChangeListeners['$all']; 
+	if(typeof allListeners == 'object' && Array.isArray(allListeners)){
+		for(var i=0; i<allListeners.length; ++i){
+			allListeners[i](oldPage,newPage);
+		}
+	}
 }
 
 JBackbone.prototype.addPage = function(id, url) {
