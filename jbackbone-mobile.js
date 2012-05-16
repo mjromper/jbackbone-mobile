@@ -207,14 +207,14 @@ JBackbone.prototype.notifyPageChange = function(oldPage, newPage){
 	if(typeof newPage != 'string') return;
 	//notify specific page
 	var specificListeners = this.pageChangeListeners[newPage]; 
-	if(typeof specificListeners && Array.isArray(specificListeners)){
+	if(typeof specificListeners == 'object' && Array.isArray(specificListeners)){
 		for(var i=0; i<specificListeners.length; ++i){
 			specificListeners[i](oldPage,newPage);
 		}
 	}
 	//notify $all	
 	var allListeners = this.pageChangeListeners['$all']; 
-	if(typeof allListeners && Array.isArray(allListeners)){
+	if(typeof allListeners == 'object' && Array.isArray(allListeners)){
 		for(var i=0; i<allListeners.length; ++i){
 			allListeners[i](oldPage,newPage);
 		}
