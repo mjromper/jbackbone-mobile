@@ -81,6 +81,7 @@ JBackbone.prototype.goToPage = function(nextPage, config){
 	
 	var oldPage = this.currentPage;
 	this.currentPage = nextPage;
+	this.currentPageConfig = config;
 	this.notifyPageChange(oldPage, this.currentPage, config);
 }
 
@@ -158,9 +159,6 @@ JBackbone.prototype.showMenu = function(menuPage, config){
 	if(!config) config={};
 	if(!config.side) config.side = 'left';
 	
-	console.log('showMenu: ' + menuPage);
-	console.log(config);
-	
 	var menuObject = document.getElementById(menuPage);
 	
 	if(config.side=='right'){
@@ -181,7 +179,6 @@ JBackbone.prototype.showMenu = function(menuPage, config){
 JBackbone.prototype.hideMenu = function(){
 	if(!this.menuVisible) return;
 	var menuObject = document.getElementById(this.menuVisible);
-	console.log('hideMenu: '+this.menuVisible);
 		
 	if(this.menuVisibleConfig.side=='right'){
 		this.x -= (this.width-this.config.MENU_MARGIN);
@@ -222,7 +219,7 @@ JBackbone.prototype.notifyPageChange = function(oldPage, newPage){
 			allListeners[i](oldPage,newPage);
 		}
 	}
-	//notify specific page
+	//notify specific listener
 	var specificListeners = this.pageChangeListeners[newPage]; 
 	if(typeof specificListeners == 'object' && Array.isArray(specificListeners)){
 		for(var i=0; i<specificListeners.length; ++i){
@@ -231,19 +228,27 @@ JBackbone.prototype.notifyPageChange = function(oldPage, newPage){
 	}
 }
 
-JBackbone.prototype.addMenuChangeListener = function(func){
+JBackbone.prototype.addMenuChangeListener = function(func, page){
 	if(typeof func != 'function') return;
-	var page = '$all';
+	if(typeof page != 'string') page = '$all';
+	if(!this.menuChangeListeners[page]) this.menuChangeListeners[page] = [];
 	this.menuChangeListeners[page].push(func);
 }
 
 JBackbone.prototype.notifyMenuChange = function(menu, menuConfig, showOrHide){
-	if(typeof newPage != 'string') return;
+	if(typeof menu != 'string') return;
 	//notify $all	
 	var allListeners = this.menuChangeListeners['$all'];
 	if(typeof allListeners == 'object' && Array.isArray(allListeners)){
 		for(var i=0; i<allListeners.length; ++i){
 			allListeners[i](menu, menuConfig, showOrHide, this.currentPage);
+		}
+	}
+	//notify specific listener
+	var specificListeners = this.menuChangeListeners[menu]; 
+	if(typeof specificListeners == 'object' && Array.isArray(specificListeners)){
+		for(var i=0; i<specificListeners.length; ++i){
+			specificListeners[i](menu, menuConfig, showOrHide, this.currentPage);
 		}
 	}
 }
@@ -308,8 +313,7 @@ JBackbone.prototype.addPages = function(pages) {
 			div.style.display = 'none';
 			div.style.left = '-9999px';
 		}
-	}
-	
+	}	
 }
 
 JBackbone.prototype.addClickEventsToAnchors = function(){
