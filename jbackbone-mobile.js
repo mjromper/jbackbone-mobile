@@ -164,18 +164,16 @@ JBackbone.prototype.showMenu = function(menuPage, config){
 	
 	if(config.side=='right'){
 		this.x += (this.width-this.config.MENU_MARGIN);
-		this.box.style.left = (-this.x)+'px';
-		menuObject.style.left = this.x+'px';
-		menuObject.style.display = 'block';
 	}else{
 		this.x -= (this.width-this.config.MENU_MARGIN);
-		this.box.style.left = (-this.x)+'px';
-		menuObject.style.left = this.x+'px';
-		menuObject.style.display = 'block';
 	}
 		
-	
+	this.box.style.left = (-this.x)+'px';
+	menuObject.style.left = this.x+'px';
+	menuObject.style.display = 'block';
+			
 	this.menuVisible = menuPage;
+	this.menuVisibleConfig = config;
 }
 
 JBackbone.prototype.hideMenu = function(){
@@ -183,7 +181,11 @@ JBackbone.prototype.hideMenu = function(){
 	var menuObject = document.getElementById(this.menuVisible);
 	console.log('hideMenu: '+this.menuVisible);
 		
-	this.x += (this.width-this.config.MENU_MARGIN);
+	if(this.menuVisibleConfig.side=='right'){
+		this.x -= (this.width-this.config.MENU_MARGIN);
+	}else{
+		this.x += (this.width-this.config.MENU_MARGIN);
+	}
 	this.box.style.left = '-'+this.x+'px';
 	
 	var self = this;
