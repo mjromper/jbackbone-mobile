@@ -81,7 +81,7 @@ JBackbone.prototype.goToPage = function(nextPage, config){
 	
 	var oldPage = this.currentPage;
 	this.currentPage = nextPage;
-	this.notifyPageChange(oldPage, this.currentPage);
+	this.notifyPageChange(oldPage, this.currentPage, config);
 }
 
 JBackbone.prototype.goBack = function(){
