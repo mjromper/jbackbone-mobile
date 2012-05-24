@@ -18,6 +18,7 @@ function JBackbone(){
 	this.width = 0;
 	this.box = null;
 	this.config = null;
+	this.timeouts = {};
 	
 	this.ANIM_SLIDE_LEFT = "SLIDE_LEFT";
 	this.ANIM_SLIDE_RIGHT = "SLIDE_RIGHT";
@@ -34,6 +35,7 @@ JBackbone.prototype.init = function(config){
 	if(!config.DEFAULT_PAGE_ID) config.DEFAULT_PAGE_ID = "index";
 	if(!config.DEFAULT_MENU_ID) config.DEFAULT_MENU_ID = "menu-page"
 	if(!config.MENU_MARGIN) config.MENU_MARGIN = 100;
+	if(!config.HIDE_PAGE_TIMOUT) config.HIDE_PAGE_TIMOUT = 400;
 	
 	var self = this; //save this so we can use it in closures
 	this.config = config;
@@ -96,12 +98,32 @@ JBackbone.prototype.goBack = function(){
 	this.notifyPageChange(oldPage, this.currentPage);
 }
 
-JBackbone.prototype.hidePage = function(obj){
+JBackbone.prototype.hidePage = function(pageId){
+	var obj = document.getElementById(pageId);
 	obj.style.display = 'none'; 
 	obj.style.left = '-9999px';
 }
 
+JBackbone.prototype.hidePageOnTimeout = function(pageId){
+	var self = this;
+	this.stopPageHide(pageId);
+	this.timeouts[pageId] = setTimeout(function(){ 
+		self.hidePage(pageId); 
+		self.timeouts[pageId] = null;
+	}, this.config.HIDE_PAGE_TIMOUT);	
+}
+
+JBackbone.prototype.stopPageHide = function(pageId){
+	if(this.timeouts[pageId]) {
+		clearTimeout(this.timeouts[pageId]);
+		this.timeouts[pageId] = null;
+	}
+}
+
 JBackbone.prototype.swapPage = function(nextPage, animation){
+	//if we were about to hide the next page, don't!
+	this.stopPageHide(nextPage);
+
 	if(!animation) animation=this.ANIM_NONE;
 	var nextPageObject =  document.getElementById(nextPage);
 	
@@ -121,14 +143,8 @@ JBackbone.prototype.swapPage = function(nextPage, animation){
 	}
 	
 	if(this.currentPage && this.currentPage!=nextPage){		
-		var currentPageObject = document.getElementById(this.currentPage);
-		var self = this;
-		if(animation!=this.ANIM_NONE){
-			//needs to be done on timeout to leave the animation enough time to finish
-			setTimeout(function(){ self.hidePage(currentPageObject); }, 1000);
-		}else{		
-			self.hidePage(currentPageObject);
-		}
+		if(animation!=this.ANIM_NONE) this.hidePageOnTimeout(this.currentPage);
+		else this.hidePage(this.currentPage);
 	}
 }
 
@@ -158,6 +174,9 @@ JBackbone.prototype.showMenu = function(menuPage, config){
 	if(!menuPage) menuPage = this.config.DEFAULT_MENU_ID;
 	if(!config) config={};
 	if(!config.side) config.side = 'left';
+
+	//if we were about to hide this menu, then don't
+	this.stopPageHide(menuPage);
 	
 	var menuObject = document.getElementById(menuPage);
 	
@@ -178,17 +197,12 @@ JBackbone.prototype.showMenu = function(menuPage, config){
 
 JBackbone.prototype.hideMenu = function(){
 	if(!this.menuVisible) return;
-	var menuObject = document.getElementById(this.menuVisible);
 		
-	if(this.menuVisibleConfig.side=='right'){
-		this.x -= (this.width-this.config.MENU_MARGIN);
-	}else{
-		this.x += (this.width-this.config.MENU_MARGIN);
-	}
+	if(this.menuVisibleConfig.side=='right') this.x -= (this.width-this.config.MENU_MARGIN);
+	else this.x += (this.width-this.config.MENU_MARGIN);
 	this.box.style.left = '-'+this.x+'px';
 	
-	var self = this;
-	setTimeout(function(){ self.hidePage(menuObject); }, 1000);
+	this.hidePageOnTimeout(this.menuVisible);
 	
 	var menuPage = this.menuVisible;
 	var config = this.menuVisibleConfig;
