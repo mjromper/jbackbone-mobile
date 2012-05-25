@@ -2,6 +2,7 @@ jbackbone-mobile
 ================
 
 Mobile Web App Framework for easy building Mobile Navigation Structures -> Just using native Javascript, HTML5 and CSS3.
+<<<<<<< HEAD
 Working perfectly on iOS and Android devices.
 
 
@@ -86,4 +87,5 @@ HOW TO USE IT
 3.- Implement as many PAGES as you want according the instructions given and examples provided.
 
 4.- HAVE FUN!!!
-	
+
+Working perfectly on iOS and Android devices.
