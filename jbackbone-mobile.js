@@ -35,7 +35,7 @@ JBackbone.prototype.init = function(config){
 	if(!config.DEFAULT_PAGE_ID) config.DEFAULT_PAGE_ID = "index";
 	if(!config.DEFAULT_MENU_ID) config.DEFAULT_MENU_ID = "menu-page"
 	if(!config.MENU_MARGIN) config.MENU_MARGIN = 100;
-	if(!config.HIDE_PAGE_TIMOUT) config.HIDE_PAGE_TIMOUT = 400;
+	if(!config.HIDE_PAGE_TIMOUT) config.HIDE_PAGE_TIMOUT = 600;
 	
 	var self = this; //save this so we can use it in closures
 	this.config = config;
@@ -185,10 +185,13 @@ JBackbone.prototype.showMenu = function(menuPage, config){
 	}else{
 		this.x -= (this.width-this.config.MENU_MARGIN);
 	}
+
+    menuObject.style.display = 'block';
 		
-	this.box.style.left = (-this.x)+'px';
-	menuObject.style.left = this.x+'px';
-	menuObject.style.display = 'block';
+    var boxTranslate = "-webkit-transform:translate(" + (-this.x)+'px' + ", 0px)";
+    var menuTranslate = "-webkit-transform:translate(" + this.x+'px' + ", 0px)";
+	this.box.setAttribute("style",boxTranslate);	
+    menuObject.setAttribute("style", menuTranslate);	
 			
 	this.menuVisible = menuPage;
 	this.menuVisibleConfig = config;
@@ -200,7 +203,9 @@ JBackbone.prototype.hideMenu = function(){
 		
 	if(this.menuVisibleConfig.side=='right') this.x -= (this.width-this.config.MENU_MARGIN);
 	else this.x += (this.width-this.config.MENU_MARGIN);
-	this.box.style.left = '-'+this.x+'px';
+
+    var boxTranslate = "-webkit-transform:translate(" + '-'+this.x+'px' + ", 0px)";
+	this.box.setAttribute("style",boxTranslate);	
 	
 	this.hidePageOnTimeout(this.menuVisible);
 	
