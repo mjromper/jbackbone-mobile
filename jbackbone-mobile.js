@@ -67,8 +67,14 @@ JBackbone.prototype.resetWidth = function(){
 			if(self.menuVisibleConfig.side=='right') self.x += diff;
 			else self.x -= diff;
 		
-			self.box.style.left = (-self.x)+'px';
-			menuObject.style.left = self.x+'px';
+			//self.box.style.left = (-self.x)+'px';
+			//menuObject.style.left = self.x+'px';
+
+			var boxTranslate = "-webkit-transform:translate(" + (-self.x)+'px' + ", 0px)";
+    		var menuTranslate = "-webkit-transform:translate(" + self.x+'px' + ", 0px)";
+			self.box.setAttribute("style",boxTranslate);	
+    		menuObject.setAttribute("style", menuTranslate);
+
 			menuObject.style.width = width+'px';
 			
 			self.previousWidth = window.innerWidth;
@@ -208,16 +214,16 @@ JBackbone.prototype.showMenu = function(menuPage, config){
 	
 	if(config.side=='right') this.x += width;
 	else this.x -= width;
-		
-	this.box.style.left = (-this.x)+'px';
-	menuObject.style.left = this.x+'px';
-	menuObject.style.width = width+'px';
-	menuObject.style.display = 'block';
 
+	//this.box.style.left = (-this.x)+'px';
+	//menuObject.style.left = this.x+'px';
 	var boxTranslate = "-webkit-transform:translate(" + (-this.x)+'px' + ", 0px)";
     var menuTranslate = "-webkit-transform:translate(" + this.x+'px' + ", 0px)";
 	this.box.setAttribute("style",boxTranslate);	
-    menuObject.setAttribute("style", menuTranslate);	
+    menuObject.setAttribute("style", menuTranslate);
+
+	menuObject.style.width = width+'px';
+	menuObject.style.display = 'block';	
 			
 	this.menuVisible = menuPage;
 	this.menuVisibleConfig = config;
@@ -231,7 +237,7 @@ JBackbone.prototype.hideMenu = function(){
 		
 	if(this.menuVisibleConfig.side=='right') this.x -= width;
 	else this.x += width;
-	this.box.style.left = '-'+this.x+'px';
+	//this.box.style.left = '-'+this.x+'px';
 
 	var boxTranslate = "-webkit-transform:translate(" + '-'+this.x+'px' + ", 0px)";
 	this.box.setAttribute("style",boxTranslate);	
