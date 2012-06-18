@@ -383,4 +383,33 @@ JBackbone.prototype.addClickEventsToAnchors = function(){
 	}
 }
 
+JBackbone.prototype.hasClass = function(ele, cls) {
+	return ele.className.match(new RegExp("(\\s|^)" + cls + "(\\s|$)"));
+}
+JBackbone.prototype.addClass = function(ele, cls) {
+	if (!this.hasClass(ele, cls))
+		ele.className += " " + cls;
+}
+JBackbone.prototype.removeClass = function(ele, cls) {
+	if (hasClass(ele, cls)) {
+		var reg = new RegExp("(\\s|^)" + cls + "(\\s|$)");
+		ele.className = ele.className.replace(reg, " ");
+	}
+}
+
+JBackbone.prototype.setOnTouchClass = function(className){
+	var elements = document.getElementsByClassName(className);
+    for(var i = 0; i < elements.length; i++) {
+      var elm = elements[i];
+      elm.addEventListener("touchstart", function() {
+        addClass(this, className+"Active");}, false);
+      elm.addEventListener("touchmove", function() {
+        removeClass(this, className+"Active");}, false);
+      elm.addEventListener("touchend", function() {
+        removeClass(this, className+"Active");}, false);
+      elm.addEventListener("touchcancel", function() {
+        removeClass(this, className+"Active");}, false);
+    }
+}
+
 var jbackbone = new JBackbone();
