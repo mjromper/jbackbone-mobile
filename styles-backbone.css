@@ -27,11 +27,6 @@ header {
 	height: 45px;
 	padding: 0;
 	z-index:999;
-	-webkit-transition:margin-left 0.4s ease-in-out;
-	-moz-transition:margin-left 0.4s ease-in-out;
-	-o-transition:margin-left 0.4s ease-in-out;
-	-ms-transition:margin-left 0.4s ease-in-out;	
-	transition:margin-left 0.4s ease-in-out;
 }
 
 header h3 {
