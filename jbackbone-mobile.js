@@ -1,9 +1,13 @@
-var supportsOrientationChange = "onorientationchange" in window,
-    orientationEvent = supportsOrientationChange ? "orientationchange" : "resize";
+//var supportsOrientationChange = "onorientationchange" in window,
+//    orientationEvent = supportsOrientationChange ? "orientationchange" : "resize";
 
 String.prototype.contains = function(it) { return this.indexOf(it) != -1; };
 
-window.addEventListener(orientationEvent, function() {
+//window.addEventListener(orientationEvent, function() {
+//	jbackbone.orientationChanged();
+//}, false);
+
+window.addEventListener('resize', function() { 
 	jbackbone.resetWidth();
 }, false);
 
@@ -15,7 +19,6 @@ function JBackbone(){
 	this.menuChangeListeners = { $all: [] };
 	
 	this.x = 0;
-	this.width = 0;
 	this.box = null;
 	this.config = null;
 	this.timeouts = {};
@@ -23,6 +26,8 @@ function JBackbone(){
 	this.ANIM_SLIDE_LEFT = "SLIDE_LEFT";
 	this.ANIM_SLIDE_RIGHT = "SLIDE_RIGHT";
 	this.ANIM_NONE = "NONE";
+	this.resizeTimer = null;
+	this.previousWidth = null;
 }
 
 JBackbone.prototype.init = function(config){		
@@ -40,7 +45,7 @@ JBackbone.prototype.init = function(config){
 	var self = this; //save this so we can use it in closures
 	this.config = config;
 	this.x = 0;
-	this.width = window.innerWidth;
+	this.previousWidth = window.innerWidth;
 	this.history = [];
 	this.box = document.getElementById(this.config.BOX_ID); //the container for pages
 	this.box.style.left = 0;
@@ -50,7 +55,25 @@ JBackbone.prototype.init = function(config){
 }
 
 JBackbone.prototype.resetWidth = function(){
-	this.width = window.innerWidth;
+	var self = this;
+	clearTimeout(this.resizeTimer);
+	this.resizeTimer = setTimeout(function() { 
+		if(self.menuVisible){
+			console.log('resizing menu');
+			var width = window.innerWidth - self.config.MENU_MARGIN;
+			var diff = window.innerWidth - self.previousWidth;
+			var menuObject = document.getElementById(self.menuVisible);		
+
+			if(self.menuVisibleConfig.side=='right') self.x += diff;
+			else self.x -= diff;
+		
+			self.box.style.left = (-self.x)+'px';
+			menuObject.style.left = self.x+'px';
+			menuObject.style.width = width+'px';
+			
+			self.previousWidth = window.innerWidth;
+		}
+	}, 300);
 }
 
 JBackbone.prototype.goToPage = function(nextPage, config){
@@ -128,14 +151,14 @@ JBackbone.prototype.swapPage = function(nextPage, animation){
 	var nextPageObject =  document.getElementById(nextPage);
 	
 	if(animation==this.ANIM_SLIDE_LEFT){
-		nextPageObject.style.left = (this.x+this.width)+'px';
+		nextPageObject.style.left = (this.x+window.innerWidth)+'px';
 		nextPageObject.style.display = 'block';
-		this.x += this.width;
+		this.x += window.innerWidth;
 		this.box.style.left = (-this.x)+'px'; 
 	}else if(animation==this.ANIM_SLIDE_RIGHT){
-		nextPageObject.style.left = (this.x-this.width)+'px';
+		nextPageObject.style.left = (this.x-window.innerWidth)+'px';
 		nextPageObject.style.display = 'block';
-		this.x -= this.width;
+		this.x -= window.innerWidth;
 		this.box.style.left = (-this.x)+'px';
 	}else{
 		nextPageObject.style.left = this.x+'px';
@@ -180,14 +203,14 @@ JBackbone.prototype.showMenu = function(menuPage, config){
 	
 	var menuObject = document.getElementById(menuPage);
 	
-	if(config.side=='right'){
-		this.x += (this.width-this.config.MENU_MARGIN);
-	}else{
-		this.x -= (this.width-this.config.MENU_MARGIN);
-	}
+	var width = window.innerWidth-this.config.MENU_MARGIN;	
+	
+	if(config.side=='right') this.x += width;
+	else this.x -= width;
 		
 	this.box.style.left = (-this.x)+'px';
 	menuObject.style.left = this.x+'px';
+	menuObject.style.width = width+'px';
 	menuObject.style.display = 'block';
 			
 	this.menuVisible = menuPage;
@@ -197,9 +220,11 @@ JBackbone.prototype.showMenu = function(menuPage, config){
 
 JBackbone.prototype.hideMenu = function(){
 	if(!this.menuVisible) return;
+	
+	var width = window.innerWidth-this.config.MENU_MARGIN; 
 		
-	if(this.menuVisibleConfig.side=='right') this.x -= (this.width-this.config.MENU_MARGIN);
-	else this.x += (this.width-this.config.MENU_MARGIN);
+	if(this.menuVisibleConfig.side=='right') this.x -= width;
+	else this.x += width;
 	this.box.style.left = '-'+this.x+'px';
 	
 	this.hidePageOnTimeout(this.menuVisible);
