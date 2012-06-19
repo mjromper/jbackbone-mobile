@@ -128,17 +128,22 @@ JBackbone.prototype.swapPage = function(nextPage, animation){
 	var nextPageObject =  document.getElementById(nextPage);
 	
 	if(animation==this.ANIM_SLIDE_LEFT){
-		nextPageObject.style.left = (this.x+this.width)+'px';
+        var nextPageTranslate = "-webkit-transform:translate(" + (this.x+window.innerWidth)+'px' + ", 0px)";
+        nextPageObject.setAttribute("style",nextPageTranslate);	
 		nextPageObject.style.display = 'block';
-		this.x += this.width;
-		this.box.style.left = (-this.x)+'px'; 
+		this.x += window.innerWidth;
+        var boxTranslate = "-webkit-transform:translate(" + (-this.x)+'px' + ", 0px)";
+        this.box.setAttribute("style",boxTranslate);	
 	}else if(animation==this.ANIM_SLIDE_RIGHT){
-		nextPageObject.style.left = (this.x-this.width)+'px';
+        var nextPageTranslate = "-webkit-transform:translate(" + (this.x-window.innerWidth)+'px' + ", 0px)";
+        nextPageObject.setAttribute("style",nextPageTranslate);	
 		nextPageObject.style.display = 'block';
-		this.x -= this.width;
-		this.box.style.left = (-this.x)+'px';
+		this.x -= window.innerWidth;
+        var boxTranslate = "-webkit-transform:translate(" + (-this.x)+'px' + ", 0px)";
+        this.box.setAttribute("style",boxTranslate);	
 	}else{
-		nextPageObject.style.left = this.x+'px';
+        var nextPageTranslate = "-webkit-transform:translate(" + this.x+'px' + ", 0px)";
+        nextPageObject.setAttribute("style",nextPageTranslate);	
 		nextPageObject.style.display = 'block';		
 	}
 	
