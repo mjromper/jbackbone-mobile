@@ -75,10 +75,10 @@ JBackbone.prototype.resetWidth = function(){
 			self.box.setAttribute("style",boxTranslate);	
     		menuObject.setAttribute("style", menuTranslate);
 
-			menuObject.style.width = width+'px';
-			
-			self.previousWidth = window.innerWidth;
+			menuObject.style.width = width+'px';			
 		}
+		
+		self.previousWidth = window.innerWidth;
 	}, 300);
 }
 
