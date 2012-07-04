@@ -157,17 +157,22 @@ JBackbone.prototype.swapPage = function(nextPage, animation){
 	var nextPageObject =  document.getElementById(nextPage);
 	
 	if(animation==this.ANIM_SLIDE_LEFT){
-		nextPageObject.style.left = (this.x+window.innerWidth)+'px';
+        var nextPageTranslate = "-webkit-transform:translate(" + (this.x+window.innerWidth)+'px' + ", 0px)";
+        nextPageObject.setAttribute("style",nextPageTranslate);	
 		nextPageObject.style.display = 'block';
 		this.x += window.innerWidth;
-		this.box.style.left = (-this.x)+'px'; 
+        var boxTranslate = "-webkit-transform:translate(" + (-this.x)+'px' + ", 0px)";
+        this.box.setAttribute("style",boxTranslate);	
 	}else if(animation==this.ANIM_SLIDE_RIGHT){
-		nextPageObject.style.left = (this.x-window.innerWidth)+'px';
+        var nextPageTranslate = "-webkit-transform:translate(" + (this.x-window.innerWidth)+'px' + ", 0px)";
+        nextPageObject.setAttribute("style",nextPageTranslate);	
 		nextPageObject.style.display = 'block';
 		this.x -= window.innerWidth;
-		this.box.style.left = (-this.x)+'px';
+        var boxTranslate = "-webkit-transform:translate(" + (-this.x)+'px' + ", 0px)";
+        this.box.setAttribute("style",boxTranslate);	
 	}else{
-		nextPageObject.style.left = this.x+'px';
+        var nextPageTranslate = "-webkit-transform:translate(" + this.x+'px' + ", 0px)";
+        nextPageObject.setAttribute("style",nextPageTranslate);	
 		nextPageObject.style.display = 'block';		
 	}
 	
@@ -381,6 +386,35 @@ JBackbone.prototype.addClickEventsToAnchors = function(){
 			self.goToPage(pageId, parentId , parentObject);
         };
 	}
+}
+
+JBackbone.prototype.hasClass = function(ele, cls) {
+	return ele.className.match(new RegExp("(\\s|^)" + cls + "(\\s|$)"));
+}
+JBackbone.prototype.addClass = function(ele, cls) {
+	if (!jbackbone.hasClass(ele, cls))
+		ele.className += " " + cls;
+}
+JBackbone.prototype.removeClass = function(ele, cls) {
+	if (jbackbone.hasClass(ele, cls)) {
+		var reg = new RegExp("(\\s|^)" + cls + "(\\s|$)");
+		ele.className = ele.className.replace(reg, " ");
+	}
+}
+
+JBackbone.prototype.setOnTouchClass = function(className){
+	var elements = document.getElementsByClassName(className);
+    for(var i = 0; i < elements.length; i++) {
+      var elm = elements[i];
+      elm.addEventListener("touchstart", function() {
+        jbackbone.addClass(elm, className+"Active");}, false);
+      elm.addEventListener("touchmove", function() {
+        jbackbone.removeClass(elm, className+"Active");}, false);
+      elm.addEventListener("touchend", function() {
+        jbackbone.removeClass(elm, className+"Active");}, false);
+      elm.addEventListener("touchcancel", function() {
+        jbackbone.removeClass(elm, className+"Active");}, false);
+    }
 }
 
 var jbackbone = new JBackbone();
