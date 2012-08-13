@@ -72,8 +72,8 @@ JBackbone.prototype.resetWidth = function(){
 			//self.box.style.left = (-self.x)+'px';
 			//menuObject.style.left = self.x+'px';
 
-			var boxTranslate = "-webkit-transform:translate(" + (-self.x)+'px' + ", 0px)";
-    		var menuTranslate = "-webkit-transform:translate(" + self.x+'px' + ", 0px)";
+			var boxTranslate = "-webkit-transform:translate(" + (-self.x)+'px' + ", 0px);-moz-transform:translate(" + (-self.x)+'px' + ", 0px)";
+    		var menuTranslate = "-webkit-transform:translate(" + self.x+'px' + ", 0px);-moz-transform:translate(" + self.x+'px' + ", 0px)";
 			self.box.setAttribute("style",boxTranslate);	
     		menuObject.setAttribute("style", menuTranslate);
 
@@ -159,21 +159,21 @@ JBackbone.prototype.swapPage = function(nextPage, animation){
 	var nextPageObject =  document.getElementById(nextPage);
 	
 	if(animation==this.ANIM_SLIDE_LEFT){
-        var nextPageTranslate = "-webkit-transform:translate(" + (this.x+window.innerWidth)+'px' + ", 0px)";
+        var nextPageTranslate = "-webkit-transform:translate(" + (this.x+window.innerWidth)+'px' + ", 0px);-moz-transform:translate(" + (this.x+window.innerWidth)+'px' + ", 0px)";
         nextPageObject.setAttribute("style",nextPageTranslate);	
 		nextPageObject.style.display = 'block';
 		this.x += window.innerWidth;
-        var boxTranslate = "-webkit-transform:translate(" + (-this.x)+'px' + ", 0px)";
+        var boxTranslate = "-webkit-transform:translate(" + (-this.x)+'px' + ", 0px);-moz-transform:translate(" + (-this.x)+'px' + ", 0px)";
         this.box.setAttribute("style",boxTranslate);	
 	}else if(animation==this.ANIM_SLIDE_RIGHT){
-        var nextPageTranslate = "-webkit-transform:translate(" + (this.x-window.innerWidth)+'px' + ", 0px)";
+        var nextPageTranslate = "-webkit-transform:translate(" + (this.x-window.innerWidth)+'px' + ", 0px);-moz-transform:translate(" + (this.x-window.innerWidth)+'px' + ", 0px)";
         nextPageObject.setAttribute("style",nextPageTranslate);	
 		nextPageObject.style.display = 'block';
 		this.x -= window.innerWidth;
-        var boxTranslate = "-webkit-transform:translate(" + (-this.x)+'px' + ", 0px)";
+        var boxTranslate = "-webkit-transform:translate(" + (-this.x)+'px' + ", 0px);-moz-transform:translate(" + (-this.x)+'px' + ", 0px)";
         this.box.setAttribute("style",boxTranslate);	
 	}else{
-        var nextPageTranslate = "-webkit-transform:translate(" + this.x+'px' + ", 0px)";
+        var nextPageTranslate = "-webkit-transform:translate(" + this.x+'px' + ", 0px);-moz-transform:translate(" + this.x+'px' + ", 0px)";
         nextPageObject.setAttribute("style",nextPageTranslate);	
 		nextPageObject.style.display = 'block';		
 	}
@@ -224,8 +224,8 @@ JBackbone.prototype.showMenu = function(menuPage, config){
 
 	//this.box.style.left = (-this.x)+'px';
 	//menuObject.style.left = this.x+'px';
-	var boxTranslate = "-webkit-transform:translate(" + (-this.x)+'px' + ", 0px)";
-    var menuTranslate = "-webkit-transform:translate(" + this.x+'px' + ", 0px)";
+	var boxTranslate = "-webkit-transform:translate(" + (-this.x)+'px' + ", 0px);-moz-transform:translate(" + (-this.x)+'px' + ", 0px)";
+    var menuTranslate = "-webkit-transform:translate(" + this.x+'px' + ", 0px);-moz-transform:translate(" + this.x+'px' + ", 0px)";
 	this.box.setAttribute("style",boxTranslate);	
     menuObject.setAttribute("style", menuTranslate);
 
@@ -246,7 +246,7 @@ JBackbone.prototype.hideMenu = function(){
 	else this.x += width;
 	//this.box.style.left = '-'+this.x+'px';
 
-	var boxTranslate = "-webkit-transform:translate(" + '-'+this.x+'px' + ", 0px)";
+	var boxTranslate = "-webkit-transform:translate(" + '-'+this.x+'px' + ", 0px);-moz-transform:translate(" + '-'+this.x+'px' + ", 0px)";
 	this.box.setAttribute("style",boxTranslate);	
 	
 	this.hidePageOnTimeout(this.menuVisible);
