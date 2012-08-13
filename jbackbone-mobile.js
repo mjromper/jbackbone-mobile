@@ -17,6 +17,8 @@ function JBackbone(){
 	this.history = [];
 	this.pageChangeListeners = { $all: [] };
 	this.menuChangeListeners = { $all: [] };
+	this.pageInitListeners = { };
+	this.pageIds = [];
 	
 	this.x = 0;
 	this.box = null;
@@ -262,6 +264,25 @@ JBackbone.prototype.toggleMenu = function(menuPage, config){
 	else this.showMenu(menuPage, config);
 }
 
+JBackbone.prototype.addPageInitListener = function(func, page){
+	if(typeof func != 'function') return;
+	if(typeof page != 'string') return;
+	if(!this.pageInitListeners[page]) this.pageInitListeners[page] = [];
+	this.pageInitListeners[page].push(func);
+}
+
+JBackbone.prototype.notifyPageInit = function(page){
+	if(typeof page != 'string') return;
+	
+	//notify specific listener
+	var specificListeners = this.pageInitListeners[page]; 
+	if(typeof specificListeners == 'object' && Array.isArray(specificListeners)){
+		for(var i=0; i<specificListeners.length; ++i){
+			specificListeners[i](page);
+		}
+	}
+}
+
 JBackbone.prototype.addPageChangeListener = function(func, page){
 	if(typeof func != 'function') return;
 	if(typeof page != 'string') page = '$all';
@@ -345,6 +366,18 @@ JBackbone.prototype.addPage = function(id, url) {
 		req.open('GET', url, false);
 		req.send(null);
 		element.innerHTML = element.innerHTML+req.responseText;
+
+		//detect new pages
+		var children = element.childNodes;
+		for(var i = 0; i<children.length; ++i){
+			var pageId = children[i].id;
+			if(pageId){
+				if(this.pageIds.indexOf(pageId)<0){
+					this.pageIds.push(pageId);	
+					this.notifyPageInit(pageId);
+				} 
+			}	
+		}		
 	} else {
 		element.innerHTML =
 		"Sorry, your browser does not support " +

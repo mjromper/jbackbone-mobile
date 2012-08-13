@@ -28,13 +28,13 @@
 					'sample-subpage-l2.html'
 				],
 				MENU_MARGIN: 80   //Margin it leaves on the menu after sliding.
-			};	
+			};					
 
-			/**
-			 IMPORTANT!!!!!
-			 1. Read instructions before 
-			 2. JUST MODIFY THIS SECTION ADDING YOUR PAGES TO THE LIST BELOW 
-			 **/		
+
+	    	/** Track all page initialisation **/
+			jbackbone.addPageInitListener(function(newPage){
+				console.log('Page was initialised: '+newPage);
+			},'sample-page2');
 
 	    	jbackbone.init(config);
 	
