@@ -1,48 +1,38 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
   <head>
-    <meta charset="utf-8">
+    <meta charset='utf-8'>
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <title>Jbackbone-mobile by mjromper</title>
-    <link rel="stylesheet" href="stylesheets/styles.css">
-    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-    <script src="javascripts/main.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link href='https://fonts.googleapis.com/css?family=Architects+Daughter' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print" />
+
     <!--[if lt IE 9]>
-      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
 
+    <title>Jbackbone-mobile by mjromper</title>
   </head>
+
   <body>
-
-      <header>
+    <header>
+      <div class="inner">
         <h1>Jbackbone-mobile</h1>
-        <p>Mobile Web App Framework for easy building Navegation backbone structure - Just native Javascript/HTML5/CSS3</p>
-      </header>
+        <h2>Mobile Web App Framework for easy building Navegation backbone structure - Just native Javascript/HTML5/CSS3</h2>
+        <a href="https://github.com/mjromper/jbackbone-mobile" class="button"><small>View project on</small>GitHub</a>
+      </div>
+    </header>
 
-      <div id="banner">
-        <span id="logo"></span>
+    <div id="content-wrapper">
+      <div class="inner clearfix">
+        <section id="main-content">
+          <h1>jbackbone-mobile</h1>
 
-        <a href="https://github.com/mjromper/jbackbone-mobile" class="button fork"><strong>View On GitHub</strong></a>
-        <div class="downloads">
-          <span>Downloads:</span>
-          <ul>
-            <li><a href="https://github.com/mjromper/jbackbone-mobile/zipball/master" class="button">ZIP</a></li>
-            <li><a href="https://github.com/mjromper/jbackbone-mobile/tarball/master" class="button">TAR</a></li>
-          </ul>
-        </div>
-      </div><!-- end banner -->
+<p>Mobile Web App Framework for easy building Mobile Navigation Structures -&gt; Just using native Javascript, HTML5 and CSS3.</p>
 
-    <div class="wrapper">
-      <nav>
-        <ul></ul>
-      </nav>
-      <section>
-        <h1>jbackbone-mobile</h1>
-
-<p>Mobile Web App Framework for easy building Mobile Navigation Structures -&gt; Just using native Javascript, HTML5 and CSS3.
-Working perfectly on iOS and Android devices.</p>
+<p>Working perfectly on iOS and Android devices.</p>
 
 <p><strong>Sample demo running here: <a href="http://lab.ochio.com.es/sample/index.html">RUNNING DEMO</a>.</strong></p>
 
@@ -96,7 +86,7 @@ Working perfectly on iOS and Android devices.</p>
          **/
         var config = {
             pages:[         
-                'sample-menu.html', //
+                'sample-menu.html', 
                 'sample-menu2.html', 
                 'sample-page1.html',    
                 'sample-page2.html', 
@@ -105,9 +95,24 @@ Working perfectly on iOS and Android devices.</p>
                 'sample-subpage-l2.html'
             ],
             MENU_MARGIN: 80   //Margin it leaves on the menu after sliding.
-        };  
+        };                  
+
+
+        /** Track all page initialisation **/
+        jbackbone.addPageInitListener(function(newPage){
+            console.log('Page was initialised: '+newPage);
+        },'sample-page2');
 
         jbackbone.init(config);
+
+        /** Track all page changes change **/
+        jbackbone.addPageChangeListener(function(oldPage,newPage){
+            console.log('Page changed from '+oldPage+' to '+newPage);
+        });
+        /** Track specific page change **/
+        jbackbone.addPageChangeListener(function(oldPage,newPage){
+            console.log('Special page is here!');
+        },'sample-page2');  
 
     }, false);
 
@@ -117,14 +122,28 @@ Working perfectly on iOS and Android devices.</p>
 <p>3.- Implement as many PAGES as you want according the instructions given and examples provided.</p>
 
 <p>4.- HAVE FUN!!!</p>
-      </section>
-      <footer>
-        <p>Project maintained by <a href="https://github.com/mjromper">mjromper</a></p>
-        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="http://twitter.com/#!/michigangraham">mattgraham</a></small></p>
-      </footer>
+
+<p>Working perfectly on iOS and Android devices.</p>
+        </section>
+
+        <aside id="sidebar">
+          <a href="https://github.com/mjromper/jbackbone-mobile/zipball/master" class="button">
+            <small>Download</small>
+            .zip file
+          </a>
+          <a href="https://github.com/mjromper/jbackbone-mobile/tarball/master" class="button">
+            <small>Download</small>
+            .tar.gz file
+          </a>
+
+          <p class="repo-owner"><a href="https://github.com/mjromper/jbackbone-mobile"></a> is maintained by <a href="https://github.com/mjromper">mjromper</a>.</p>
+
+          <p>This page was generated by <a href="pages.github.com">GitHub Pages</a> using the Architect theme by <a href="http://twitter.com/jasonlong">Jason Long</a>.</p>
+        </aside>
+      </div>
     </div>
-    <!--[if !IE]><script>fixScale(document);</script><!--<![endif]-->
-              <script type="text/javascript">
+
+            <script type="text/javascript">
             var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
             document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
           </script>
