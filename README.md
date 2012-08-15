@@ -2,7 +2,7 @@ jbackbone-mobile
 ================
 
 Mobile Web App Framework for easy building Mobile Navigation Structures -> Just using native Javascript, HTML5 and CSS3.
-<<<<<<< HEAD
+
 Working perfectly on iOS and Android devices.
 
 
@@ -53,7 +53,7 @@ HOW TO USE IT
 
 	<script type="text/javascript">
 		document.addEventListener("DOMContentLoaded", function () {
-
+			
 			/**
 			 IMPORTANT!!!!!
 			 1. Read instructions before 
@@ -61,7 +61,7 @@ HOW TO USE IT
 			 **/
 			var config = {
 				pages:[			
-					'sample-menu.html', //
+					'sample-menu.html', 
 					'sample-menu2.html', 
 					'sample-page1.html',	
 					'sample-page2.html', 
@@ -70,9 +70,24 @@ HOW TO USE IT
 					'sample-subpage-l2.html'
 				],
 				MENU_MARGIN: 80   //Margin it leaves on the menu after sliding.
-			};	
+			};					
+
+
+	    	/** Track all page initialisation **/
+			jbackbone.addPageInitListener(function(newPage){
+				console.log('Page was initialised: '+newPage);
+			},'sample-page2');
 
 	    	jbackbone.init(config);
+	
+			/** Track all page changes change **/
+			jbackbone.addPageChangeListener(function(oldPage,newPage){
+				console.log('Page changed from '+oldPage+' to '+newPage);
+			});
+			/** Track specific page change **/
+			jbackbone.addPageChangeListener(function(oldPage,newPage){
+				console.log('Special page is here!');
+			},'sample-page2');	
 
 		}, false);
 
